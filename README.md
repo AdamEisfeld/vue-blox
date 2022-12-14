@@ -1,6 +1,6 @@
 # Vue Blox
 
-[![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/AdamEisfeld/5deff13e382d361bfceea173202bbc7a/raw/1c5992463931db5719d223737d9509e605f950d9/vue-blox__heads_main.json)]
+[Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/AdamEisfeld/5deff13e382d361bfceea173202bbc7a/raw/1c5992463931db5719d223737d9509e605f950d9/vue-blox__heads_main.json)
 
 Vue Blox is a light-weight plugin for Vue 3 that allows you to render regular Javascript objects as Vue components.
 
