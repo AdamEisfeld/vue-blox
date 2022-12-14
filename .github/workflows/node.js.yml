@@ -58,7 +58,7 @@ jobs:
         with:
           auth: ${{ secrets.GIST_SECRET }}
           gistID: 5deff13e382d361bfceea173202bbc7a
-          filename: rollup-plugin-critical__${{ env.BRANCH }}.json
+          filename: vue-blox__${{ env.BRANCH }}.json
           label: Test Coverage
           message: ${{ env.COVERAGE }}
           color: green
