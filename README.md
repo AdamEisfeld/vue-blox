@@ -116,7 +116,7 @@ Obtain a JS object describing your desired component to render, pass it to useBl
 ```ts
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { BloxView, useBlox } from '../src'
+import { BloxView, useBlox } from 'vue-blox'
 
 export default defineComponent({
 	name: 'App',
@@ -157,7 +157,7 @@ You can optionally provide a second Javascript object to useBlox(...) describing
 ```ts
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { BloxView, useBlox } from '../src'
+import { BloxView, useBlox } from 'vue-blox'
 
 export default defineComponent({
 	name: 'App',
@@ -266,7 +266,7 @@ Then you might insert nested JS objects into the 'children' slot like so:
 ```ts
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { BloxView, useBlox } from '../src'
+import { BloxView, useBlox } from 'vue-blox'
 
 export default defineComponent({
 	name: 'App',
@@ -317,7 +317,7 @@ It can be useful to monitor the variables within your BloxView as they are modif
 ```ts
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { BloxView, useBlox } from '../src'
+import { BloxView, useBlox } from 'vue-blox'
 
 export default defineComponent({
 	name: 'App',
