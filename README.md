@@ -3,7 +3,6 @@
 ![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/AdamEisfeld/5deff13e382d361bfceea173202bbc7a/raw/1c5992463931db5719d223737d9509e605f950d9/vue-blox__heads_main.json)
 
 Vue Blox is a light-weight plugin for Vue 3 that allows you to render regular Javascript objects as Vue components.
-
 If you've ever used Slack's [BlockKit API](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=&cad=rja&uact=8&ved=2ahUKEwiZ3Ljc4vn7AhVGheAKHbCQB6QQFnoECA0QAQ&url=https://api.slack.com/block-kit&usg=AOvVaw3968Lct0SGECMdK_62GKu0), Vue Blox behaves similarly.
 
   
@@ -105,6 +104,7 @@ const blox = createBlox({
 	'label': MyLabelComponent
 })
 
+app.use(blox)
 app.mount('#app')
 ```
 
@@ -256,6 +256,7 @@ const blox = createBlox({
 	'label': MyLabelComponent
 })
 
+app.use(blox)
 app.mount('#app')
 ```
 
