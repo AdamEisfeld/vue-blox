@@ -31,7 +31,8 @@
 		"build:types": "vue-tsc --project tsconfig.build-types.json --declaration --emitDeclarationOnly --outDir dist ",
 		"typecheck": "vue-tsc --project tsconfig.build-types.json --noEmit",
 		"test": "vitest run",
-		"coverage": "vitest run --coverage"
+		"coverage": "vitest run --coverage",
+		"test-ci": "vitest run --coverage.enabled --coverage.reporter='text-summary'"
 	},
 	"peerDependencies": {
 		"@types/node": "^18.11.13",
