@@ -1,4 +1,5 @@
-# Vue Blox
+<img src="https://user-images.githubusercontent.com/2840242/207716387-7ff01edc-1718-4e4c-87d7-40fb917dd937.png" alt="VueBlox" width="200"/>
+---
 
 ![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/AdamEisfeld/5deff13e382d361bfceea173202bbc7a/raw/1c5992463931db5719d223737d9509e605f950d9/vue-blox__heads_main.json)
 
@@ -9,6 +10,7 @@ If you've ever used Slack's [BlockKit API](https://www.google.com/url?sa=t&rct=j
   
 ## Installation
 
+  
 
 Vue Blox is available as a node package. For the latest stable version, run:
 
@@ -359,3 +361,4 @@ export default defineComponent({
 	</main>
 </template>
 ```
+
