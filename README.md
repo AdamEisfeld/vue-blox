@@ -9,7 +9,6 @@ If you've ever used Slack's [BlockKit API](https://www.google.com/url?sa=t&rct=j
   
 ## Installation
 
-  
 
 Vue Blox is available as a node package. For the latest stable version, run:
 
