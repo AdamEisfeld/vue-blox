@@ -1,6 +1,5 @@
 <script lang="ts">
 import { defineComponent} from 'vue'
-import BloxView from '../src/BloxView.vue';
 
 export default defineComponent({
 	name: 'StackComponent',
@@ -15,7 +14,14 @@ export default defineComponent({
 </script>
 	
 <template>
-	<div>
+	<div class="container">
 		<slot name="children"></slot>
 	</div>
 </template>
+
+<style>
+	.container {
+		display: flex;
+		flex-direction: column;
+	}
+</style>
