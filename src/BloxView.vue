@@ -3,7 +3,7 @@ import { defineComponent, computed } from 'vue'
 import type { Ref } from 'vue'
 import { BloxCatalog } from './BloxCatalog'
 import { BloxModel } from './BloxModel'
-import * as mustache from 'mustache'
+var Mustache = require('mustache')
 
 /**
  * A BloxView is a Vue component capable of rendering one or more plain JS objects that have been appropriately mapped to a BloxCatalog
@@ -57,7 +57,7 @@ export default defineComponent({
 			}
 
 			try {
-				let unwrapped = mustache.render(value, flattenedVariables, flattenedVariables)
+				let unwrapped = Mustache.render(value, flattenedVariables, flattenedVariables)
 				if (unwrapped.includes('{{') && steps < 10) {
 					unwrapped = unwrapMustacheIfFound(unwrapped, flattenedVariables, steps + 1)
 				}
