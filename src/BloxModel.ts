@@ -15,6 +15,16 @@ export class BloxModel {
 		
 		const processedVariables: Record<string, Ref<any>> = existingVariables ?? {}
 
+		// Prefill processed variables with simple refs of input variables
+		for (let v = 0; v < Object.keys(inputVariables ?? {}).length; v += 1) {
+			const key = Object.keys(inputVariables ?? {})[v]
+			if (processedVariables[key] !== undefined) {
+				continue
+			}
+			const value = (inputVariables ?? {})[key]
+			processedVariables[key] = ref(value)
+		}
+
 		const model = new BloxModel()
 		const processed = this.process(inputModel, inputVariables, processedVariables)
 
@@ -106,30 +116,21 @@ export class BloxModel {
 
 				// 3. Check if we have a provided value in variables
 				const boundValue = useVariables[variableName]
-
-				if (!processedVariables[variableName]) {
-
-					// 4. Add processed variables entry if we dont have one yet
-					const reactiveValue = ref(boundValue)
-					processedVariables[variableName] = reactiveValue
-
-				}
 			
-				// 5. Construct getter / setter props for v-bind
+				// 4. Construct getter / setter props for v-bind
 				processedProps[propName] = processedVariables[variableName]
 				processedProps[`onUpdate:${propName}`] = (newValue: any) => {
 					const currentBoundValue = processedVariables[variableName]
 					currentBoundValue.value = newValue
 				}
 
-				// 6. Update mutable view to remove the bound key and just have the static value provided
+				// 5. Update mutable view to remove the bound key and just have the static value provided
 				delete processedView[key]
 				processedView[propName] = boundValue
 					
 			} else {
 
 				// This is a basic primitive prop
-
 				const propName = key
 				processedProps[propName] = ref(value)
 

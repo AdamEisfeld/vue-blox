@@ -1,7 +1,7 @@
 import { mount } from '@vue/test-utils'
+import { test, expect } from 'vitest'
 import { createBlox, BloxCatalog, BloxModel, useBlox } from '../src'
 import BloxView from '../src/BloxView.vue'
-import { test, expect } from 'vitest'
 import TestLabelComponent from './TestLabelComponent.vue'
 import TestButtonCounterComponent from './TestButtonCounterComponent.vue'
 import TestStackComponent from './TestStackComponent.vue'
@@ -851,5 +851,86 @@ test('Replacing model but keeping variables keeps current variable values', asyn
 	})
 
 	expect(updated.variables['testCount'].value).toBe(1)
+
+})
+
+
+test('Model variables with mustache templates work', async () => {
+
+	// Given
+
+	const catalog = new BloxCatalog()
+	catalog.register({
+		type: 'label',
+		component: TestLabelComponent
+	})
+
+	// When
+
+	const inputVariables = {
+		'testMessage': '{{ name }} is {{age}} years old, and created Vue Blox in {{ year }}.',
+		'name': 'Adam',
+		'age': 32,
+		'year': 2022
+	}
+
+	const inputModel = {
+		'type': 'label',
+		'bind:message': 'testMessage'
+	}
+
+	const { model, variables } = BloxModel.from(inputModel, inputVariables)
+
+	const wrapper = mount(BloxView, {
+		props: {
+			catalog: catalog,
+			model: model,
+			variables: variables,
+		},
+	})
+
+	// Then
+
+	expect(wrapper.text()).toContain('Adam is 32 years old, and created Vue Blox in 2022.')
+
+})
+
+test('Model variables with invalid mustache templates work', async () => {
+
+	// Given
+
+	const catalog = new BloxCatalog()
+	catalog.register({
+		type: 'label',
+		component: TestLabelComponent
+	})
+
+	// When
+
+	const inputVariables = {
+		'testMessage': '{{ this should not render as mustache.',
+		'name': 'Adam',
+		'age': 32,
+		'year': 2022
+	}
+
+	const inputModel = {
+		'type': 'label',
+		'bind:message': 'testMessage'
+	}
+
+	const { model, variables } = BloxModel.from(inputModel, inputVariables)
+
+	const wrapper = mount(BloxView, {
+		props: {
+			catalog: catalog,
+			model: model,
+			variables: variables,
+		},
+	})
+
+	// Then
+
+	expect(wrapper.text()).toContain('{{ this should not render as mustache.')
 
 })

@@ -40,9 +40,10 @@ export default defineComponent({
 		})
 
 		// 2. Construct variables
-
+		
 		const inputVariables: any = {
-			foo: 'Adam',
+			bar: 'Adam',
+			foo: '{{ bar }}s score is {{ score }}',
 			score: 0,
 		}
 
@@ -58,7 +59,7 @@ export default defineComponent({
 				},
 				{
 					type: 'button',
-					'bind:message': 'foo',
+					'message': 'Mustache here {{ foo }} {{ foo }}',
 					'bind:count': 'score',
 				}
 			]
