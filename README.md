@@ -13,7 +13,7 @@ If you've ever used Slack's [BlockKit API](https://www.google.com/url?sa=t&rct=j
 Vue Blox is available as a node package. For the latest stable version, run:
 
 
-```
+```bash
 npm install vue-blox
 ```
 
@@ -309,6 +309,47 @@ export default defineComponent({
 </template>
 ```
 
+## Using Mustache
+
+Vue Blox supports the use of mustache templates in both the values for variables you provide to Vue Blox, and the values you provide for props within models passed to Vue Blox. To enable mustache support, you will need to install the popular mustache.js npm module:
+
+```bash
+npm install mustache --save
+```
+
+For example, you might grab the "name" and "age" variable and use them in the "text" prop of a label component:
+
+```ts
+// Construct some variables to provide data to our props:
+const inputVariables: any = {
+  name: 'Bruce Banner',
+  age: 42
+}
+
+// Construct a JS object to render. We use mustache to extract values from our variables and inject them directly into the text passed to the label.
+const inputModel: any = {
+  type: 'label',
+  text: '{{ name }} is {{ age }} years old.'
+}
+```
+
+Or, you might compute this text as a variable itself:
+
+```ts
+// Construct some variables to provide data to our props:
+const inputVariables: any = {
+  name: 'Bruce Banner',
+  age: 42,
+  summary: '{{ name }} is {{ age }} years old.'
+}
+
+// Construct a JS object to render. We use mustache to extract values from our variables and inject them directly into the text passed to the label.
+const inputModel: any = {
+  type: 'label',
+  text: '{{ summary }}'
+}
+```
+
 ## Watching Variable Changes
 
 It can be useful to monitor the variables within your BloxView as they are modified by the various injected components:
@@ -361,4 +402,3 @@ export default defineComponent({
 	</main>
 </template>
 ```
-
