@@ -1,3 +1,4 @@
+
 <img src="https://user-images.githubusercontent.com/2840242/207716387-7ff01edc-1718-4e4c-87d7-40fb917dd937.png" alt="VueBlox" width="200"/>
 
 ![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/AdamEisfeld/5deff13e382d361bfceea173202bbc7a/raw/1c5992463931db5719d223737d9509e605f950d9/vue-blox__heads_main.json)
@@ -7,11 +8,7 @@ If you've ever used Slack's [BlockKit API](https://www.google.com/url?sa=t&rct=j
 
   
 ## Installation
-
-  
-
 Vue Blox is available as a node package. For the latest stable version, run:
-
 
 ```bash
 npm install vue-blox
@@ -93,15 +90,17 @@ Register your components with Vue Blox globally using the plugin API:
 ```ts
 import App  from  './App.vue'
 import { createApp } from  'vue'
-import { createBlox } from  'vue-blox'
+import { registerBlox } from  'vue-blox'
 import MyHeadingComponent from './MyHeadingComponent.vue'
 import MyLabelComponent from './MyLabelComponent.vue'
 
 const app = createApp(App)
 
-const blox = createBlox({
-	'heading': MyHeadingComponent,
-	'label': MyLabelComponent
+const blox = registerBlox({
+	catalog: {
+		'heading': MyHeadingComponent,
+		'label': MyLabelComponent
+	}
 })
 
 app.use(blox)
@@ -110,13 +109,13 @@ app.mount('#app')
 
 ### Render Blox
 
-Obtain a JS object describing your desired component to render, pass it to useBlox(...) to obtain a formatted model ready for Vue Blox, then pass the formatted model to a BloxView component via the model prop:
+Obtain a JS object describing your desired component to render, pass it to getBloxView(...) to obtain a formatted view model ready for Vue Blox, then pass the formatted view model to a BloxComponent component via the view prop:
 
  **App.vue:**
 ```ts
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { BloxView, useBlox } from 'vue-blox'
+import { BloxComponent, getBloxView } from 'vue-blox'
 
 export default defineComponent({
 	name: 'App',
@@ -125,16 +124,16 @@ export default defineComponent({
 	setup() {
 		
 		// Construct a JS object to render
-		const inputModel: any = {
+		const inputView: any = {
 			type: 'heading',
 			text: 'Hello, Blox!'
 		}
 
-		// Parse the input model into a model ready for Vue Blox:
-		const { model } = useBlox(inputModel)
+		// Parse the input view into a view model ready for Vue Blox:
+		const view = getBloxView(inputView)
 
 		return {
-			model
+			view
 		}
 	},
 })
@@ -143,21 +142,21 @@ export default defineComponent({
 ```html
 <template>
 	<main>
-		<!-- Pass the model to a BloxView for rendering -->
-		<BloxView :model="model"/>
+		<!-- Pass the view model to a BloxComponent for rendering -->
+		<BloxComponent :view="view"/>
 	</main>
 </template>
 ```
 
 ## Binding Props
 
-You can optionally provide a second Javascript object to useBlox(...) describing any variables you would like to expose to your components. These variables can be referenced within the view models you provide to Vue Blox by prefixing a prop's name with 'bind:', and setting the prop's value to the name of the variable you wish to bind to. For example:
+You can optionally provide a second BloxBindings object to getBloxView(...) describing any variables you would like to expose to your components. These variables are obtained from the getBloxVariables(...) function and can be referenced within the views you provide to getBloxView(...) by prefixing a prop's name with 'bind:', and setting the prop's value to the name of the variable you wish to bind to. For example:
 
  **App.vue:**
 ```ts
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { BloxView, useBlox } from 'vue-blox'
+import { BloxComponent, getBloxBindings, getBloxView } from 'vue-blox'
 
 export default defineComponent({
 	name: 'App',
@@ -165,24 +164,24 @@ export default defineComponent({
 	props: {},
 	setup() {
 		
-		
 		// Construct some variables to provide bound data to our props:
-		const inputVariables: any = {
+		const inputBindings: any = {
 			someVariable: 'Hello, Variables!'
 		}
 
 		// Construct a JS object to render. We bind the 'text' prop to the value of 'someVariable' in our variables:
-		const inputModel: any = {
+		const inputView: any = {
 			type: 'heading',
 			'bind:text': 'someVariable'
 		}
 
-		// Parse the input model and variables into a model and variables ready for Vue Blox:
-		const { model, variables } = useBlox(inputModel, inputVariables)
+		// Parse the input bindings into a BloxBindings instance, and pass it to the getBloxView(...) call:
+		const bindings = getBloxBindings(inputBindings)
+		const view = getBloxView(inputView, bindings)
 
 		return {
-			model,
-			variables
+			view,
+			bindings
 		}
 	},
 })
@@ -191,17 +190,17 @@ export default defineComponent({
 ```html
 <template>
 	<main>
-		<!-- Pass the model to a BloxView for rendering -->
-		<BloxView :model="model" :variables="variables"/>
+		<!-- Pass the view and bindings to a BloxComponent for rendering -->
+		<BloxComponent :view="view" :bindings="bindings"/>
 	</main>
 </template>
 ```
 
-Bound props will automatically update the value in the variables returned from useBlox(...) if the component they are provided to emits an 'update:[propName]' event. This allows you to share reactive data across multiple components in your Vue Blox, and react to changes in that data by monitoring the values in the variables returned from useBlox(...).
+Bound props will automatically update the value in the entries of the bindings returned from getBloxBindings(...) if the component they are provided to emits an 'update:[propName]' event matching the prop's name bound to. This allows you to share reactive data across multiple components in your Vue Blox, and react to changes in that data by monitoring the values in the bindings.
 
 ## Providing Slots
 
-You can optionally provide nested objects to be inserted into slots of your component by including a key/value pair where the key is in the format 'slot:[slotName]' and the value is either a single nested object to be rendered or an array of objects to be rendered.
+You can optionally provide nested objects to be inserted into slots of your component by including a key/value pair where the key is in the format 'slot:[slotName]' and the value is either a single nested object to be rendered or an array of objects to be rendered. If no slot name is provided, the 'default' slot will be used in the parent component.
 
 For example, if you had a component named MyStackComponent, which used flex-box to stack components vertically in a slot named 'children':
 
@@ -243,17 +242,19 @@ And you mapped this component to the 'stack' type in Vue Blox:
 ```ts
 import App  from  './App.vue'
 import { createApp } from  'vue'
-import { createBlox } from  'vue-blox'
+import { registerBlox } from  'vue-blox'
 import MyStackComponent from './MyStackComponent.vue'
 import MyHeadingComponent from './MyHeadingComponent.vue'
 import MyLabelComponent from './MyLabelComponent.vue'
 
 const app = createApp(App)
 
-const blox = createBlox({
-	'stack': MyStackComponent,
-	'heading': MyHeadingComponent,
-	'label': MyLabelComponent
+const blox = registerBlox({
+	catalog: {
+		'stack': MyStackComponent,
+		'heading': MyHeadingComponent,
+		'label': MyLabelComponent
+	}
 })
 
 app.use(blox)
@@ -262,11 +263,11 @@ app.mount('#app')
 
 Then you might insert nested JS objects into the 'children' slot like so:
 
-**App.vue:**
+ **App.vue:**
 ```ts
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { BloxView, useBlox } from 'vue-blox'
+import { BloxComponent, getBloxBindings, getBloxView } from 'vue-blox'
 
 export default defineComponent({
 	name: 'App',
@@ -274,8 +275,13 @@ export default defineComponent({
 	props: {},
 	setup() {
 
-		// Construct a JS object to render:
-		const inputModel: any = {
+		// Construct some variables to provide bound data to our props:
+		const inputBindings: any = {
+			someVariable: 'Hello, Variables!'
+		}
+		
+		// Construct a JS object to render. We bind the 'text' prop to the value of 'someVariable' in our variables:
+		const inputView: any = {
 			type: 'stack',
 			'slot:children': [
 				{
@@ -284,17 +290,18 @@ export default defineComponent({
 				},
 				{
 					type: 'label',
-					text: 'This is a nested label.',
+					'bind:text': 'someVariable',
 				}
 			]
 		}
 
-		// Parse the input model and variables into a model and variables ready for Vue Blox:
-		const { model, variables } = useBlox(inputModel, inputVariables)
+		// Parse the input bindings into a BloxBindings instance, and pass it to the getBloxView(...) call:
+		const bindings = getBloxBindings(inputBindings)
+		const view = getBloxView(inputView, bindings)
 
 		return {
-			model,
-			variables
+			view,
+			bindings
 		}
 	},
 })
@@ -303,11 +310,13 @@ export default defineComponent({
 ```html
 <template>
 	<main>
-		<!-- Pass the model to a BloxView for rendering -->
-		<BloxView :model="model" :variables="variables"/>
+		<!-- Pass the view and bindings to a BloxComponent for rendering -->
+		<BloxComponent :view="view" :bindings="bindings"/>
 	</main>
 </template>
 ```
+
+Note that bindings are automatically exposed to all slots of a BloxComponent, recursively. In the above example, the second label component we put in the stack has it's text prop bound to the 'someVariable' entry in our bindings.
 
 ## Using Mustache
 
@@ -327,7 +336,7 @@ const inputVariables: any = {
 }
 
 // Construct a JS object to render. We use mustache to extract values from our variables and inject them directly into the text passed to the label.
-const inputModel: any = {
+const inputView: any = {
   type: 'label',
   text: '{{ name }} is {{ age }} years old.'
 }
@@ -344,51 +353,60 @@ const inputVariables: any = {
 }
 
 // Construct a JS object to render. We use mustache to extract values from our variables and inject them directly into the text passed to the label.
-const inputModel: any = {
+const inputView: any = {
   type: 'label',
   text: '{{ summary }}'
 }
 ```
 
-## Watching Variable Changes
+## Watching Binding Changes
 
-It can be useful to monitor the variables within your BloxView as they are modified by the various injected components:
+It can be useful to monitor your bindings as they are modified by the various injected components:
 
 **App.vue:**
 ```ts
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { BloxView, useBlox } from 'vue-blox'
+import { defineComponent, watch } from 'vue'
+import { BloxComponent, getBloxBindings, getBloxView } from 'vue-blox'
 
 export default defineComponent({
 	name: 'App',
 	components: {},
 	props: {},
 	setup() {
-		
-		
+
 		// Construct some variables to provide bound data to our props:
-		const inputVariables: any = {
+		const inputBindings: any = {
 			someVariable: 'Hello, Variables!'
 		}
-
+		
 		// Construct a JS object to render. We bind the 'text' prop to the value of 'someVariable' in our variables:
-		const inputModel: any = {
-			type: 'heading',
-			'bind:text': 'someVariable'
+		const inputView: any = {
+			type: 'stack',
+			'slot:children': [
+				{
+					type: 'heading',
+					text: 'This is a nested heading.',
+				},
+				{
+					type: 'label',
+					'bind:text': 'someVariable',
+				}
+			]
 		}
 
-		// Parse the input model and variables into a model and variables ready for Vue Blox:
-		const { model, variables } = useBlox(inputModel, inputVariables)
+		// Parse the input bindings into a BloxBindings instance, and pass it to the getBloxView(...) call:
+		const bindings = getBloxBindings(inputBindings)
+		const view = getBloxView(inputView, bindings)
 
-		// Watch variables for changes:
-		watch(Object.values(variables), () => {
+		// Watch bindings for changes:
+		watch(Object.values(bindings.entries), () => {
 			console.log('Changes have been made!')
 		})
 		
 		return {
-			model,
-			variables
+			view,
+			bindings
 		}
 	},
 })
@@ -397,8 +415,138 @@ export default defineComponent({
 ```html
 <template>
 	<main>
-		<!-- Pass the model to a BloxView for rendering -->
-		<BloxView :model="model" :variables="variables"/>
+		<!-- Pass the view and bindings to a BloxComponent for rendering -->
+		<BloxComponent :view="view" :bindings="bindings"/>
 	</main>
 </template>
+```
+
+## Component-Level Catalogs
+
+You can optionally provide a BloxCatalog object to BloxComponents if you wish to override the settings you've used in registerBlox(...) (or, you can use this method if you don't wish to install Vue Blox app-wide, but remember to register the BloxComponent in your component in that case).
+
+**App.vue:**
+```ts
+<script lang="ts">
+import { defineComponent, watch } from 'vue'
+import { BloxComponent, getBloxBindings, getBloxView } from 'vue-blox'
+
+export default defineComponent({
+	name: 'App',
+	components: {},
+	props: {},
+	setup() {
+		
+		// Construct some variables to provide bound data to our props:
+		const inputBindings: any = {
+			someVariable: 'Hello, Variables!'
+		}
+
+		// Construct a JS object to render. We bind the 'text' prop to the value of 'someVariable' in our variables:
+		const inputView: any = {
+			type: 'label',
+			'bind:text': 'someVariable'
+		}
+
+		// Parse the input bindings into a BloxBindings instance, and pass it to the getBloxView(...) call:
+		const bindings = getBloxBindings(inputBindings)
+		const view = getBloxView(inputView, bindings)
+		
+		// Provide a catalog at the component-level:
+		const catalog = getBloxCatalog({
+			'label': MyLabelComponent
+		})
+		
+		return {
+			view,
+			bindings,
+			catalog
+		}
+	},
+})
+</script>
+```
+```html
+<template>
+	<main>
+		<!-- Pass the view and bindings to a BloxComponent for rendering -->
+		<BloxComponent :view="view" :bindings="bindings" :catalog="catalog"/>
+	</main>
+</template>
+```
+
+## Plugin Support
+
+Vue Blox is extendable through plugins. In fact, Vue Blox uses it's plugin system internally for handling slots, bindings, and mustache templates. There are two kinds of plugins available:
+
+### Key Plugins
+
+Key plugins are responsible for reading a given key/value from the input view passed to getBloxView(...) and returning one or more props and/or slots to be passed to the resulting component. Vue Blox iterates over all of it's Key plugins for each key in an input view until it finds a plugin that returns some value for either props or slots. Internally, Vue Blox always falls back to lastly using it's slot, bind, and simple Key plugins to determine props/slots if no results are returned from installed Key plugins.
+
+Create a Key plugin by creating a class that implements the BloxKeyPluginInterface interface, returning some value from the handleKey function:
+
+```ts
+handleKey(value:  any, variables:  Record<string, any>):  any
+```
+
+Then provide this plugin to the registerBlox(...) call before using Vue Blox in your app:
+
+```ts
+const app = createApp(App)
+
+const blox = registerBlox({
+	catalog: {
+		...
+	},
+	keyPlugins: [
+		new MyKeyPlugin()
+	]
+})
+
+app.use(blox)
+
+app.mount('#app')
+```
+
+You can also pass Key plugins directly to the getBloxView(...) call, to be used on top of any globally registered Key plugins:
+
+```ts
+const view = getBloxView(inputView, inputBindings, [
+	new MyKeyPlugin()
+])
+```
+
+### Value Plugins
+
+Value plugins are responsible for modifying the value of a prop at run-time when the component needs it, and are stackable. For example, Vue Blox uses an internal Value plugin for rendering mustache templates.
+
+Create a Value plugin by creating a class that implements the BloxValuePluginInterface interface, returning some value from the handleValue function:
+
+```ts
+handleValue(value:  any, variables:  Record<string, any>):  any
+```
+
+Then provide this plugin to the registerBlox(...) call before using Vue Blox in your app:
+
+```ts
+const app = createApp(App)
+
+const blox = registerBlox({
+	catalog: {
+		...
+	},
+	valuePlugins: [
+		new MyValuePlugin()
+	]
+})
+
+app.use(blox)
+
+app.mount('#app')
+```
+
+You can also pass Value plugins directly to your BloxComponent as a prop, to be used on top of any globally registered Value plugins:
+
+```
+<BloxComponent :view="view" :valuePlugins="[new MyValuePlugin()]"/>
 ```

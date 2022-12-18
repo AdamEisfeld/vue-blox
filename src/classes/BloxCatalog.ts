@@ -5,15 +5,9 @@ import type { ComponentPublicInstance } from 'vue'
  */
 export class BloxCatalog {
 
-	static shared = new BloxCatalog()
-
 	private componentMap: Record<string, ComponentPublicInstance<any>> = {}
 
-	public register({ type, component}: { type: string, component: ComponentPublicInstance<any> }) {
-		this.componentMap[type] = component
-	}
-
-	public registerAll(map: Record<string, ComponentPublicInstance<any>>) {
+	public register(map: Record<string, ComponentPublicInstance<any>>) {
 		Object.assign(this.componentMap, map)
 	}
 

@@ -1,13 +1,21 @@
-import BloxView from './BloxView.vue'
-import { BloxModel } from './BloxModel'
-import { BloxCatalog } from './BloxCatalog'
-import { createBlox } from './createBlox'
-import { useBlox } from './useBlox'
+import { BloxView } from './classes/BloxView'
+import { BloxBindings } from './classes/BloxBindings'
+import { BloxCatalog } from './classes/BloxCatalog'
+import { BloxError } from './classes/BloxError'
+import { registerBlox } from './composables/registerBlox'
+import { getBloxCatalog } from './composables/getBloxCatalog'
+import { getBloxBindings } from './composables/getBloxBindings'
+import { getBloxView } from './composables/getBloxView'
+import BloxComponent from './components/BloxComponent.vue'
 
 export {
 	BloxView,
-	BloxModel,
+	BloxBindings,
 	BloxCatalog,
-	createBlox,
-	useBlox,
+	BloxError,
+	registerBlox,
+	getBloxCatalog,
+	getBloxBindings,
+	getBloxView,
+	BloxComponent,
 }

@@ -1,55 +1,30 @@
 <script lang="ts">
-import { defineComponent, toRef, watch, Ref, ref, shallowRef } from 'vue'
-import { BloxView, BloxModel, BloxCatalog, useBlox } from '../src'
-import StackComponent from './StackComponent.vue'
-import ButtonComponent from './ButtonComponent.vue'
+
+import { defineComponent, watch } from 'vue'
+import { getBloxBindings } from '../src/composables/getBloxBindings'
+import { getBloxView } from '../src/composables/getBloxView'
+import BloxComponent from '../src/components/BloxComponent.vue'
 
 export default defineComponent({
 	name: 'App',
-	components: {},
+	components: {
+		BloxComponent,
+	},
 	props: {},
 	setup() {
 
-
-		/**
-		 * 
-		 * const blox = defineBlox({
-		 * 		'stack': StackComponent,
-		 * 		'button': ButtonComponent,
-		 * 		... etc
-		 * })
-		 * 
-		 * app.use(blox) // stores catalog in some singleton
-		 * 
-		 * 
-		 * 
-		 */
-
-
-
-		// 1. Register components
-
-		const catalog = new BloxCatalog()
-		catalog.register({
-			type: 'stack',
-			component: StackComponent,
-		})
-		catalog.register({
-			type: 'button',
-			component: ButtonComponent,
-		})
-
-		// 2. Construct variables
+		// 1. Construct variables
 		
 		const inputVariables: any = {
 			bar: 'Adam',
-			foo: '{{ bar }}s score is {{ score }}',
+			foo: 'Tom',
+			baz: 'Joey',
 			score: 0,
 		}
 
-		// 3. Construct view
+		// 2. Construct view
 
-		const inputModel: any = {
+		const inputView: any = {
 			type: 'stack',
 			'slot:children': [
 				{
@@ -59,68 +34,22 @@ export default defineComponent({
 				},
 				{
 					type: 'button',
-					'message': 'Mustache here {{ foo }} {{ foo }}',
+					'message': '{{ bar }} and {{ baz }}',
 					'bind:count': 'score',
 				}
 			]
 		}
 
-		// 4. Process data
+		const bindings = getBloxBindings(inputVariables)
+		const view = getBloxView(inputView, bindings)
 
-
-		// const { model, variables } = BloxModel.from(inputModel, inputVariables)
-
-		const bloxModel: Ref<BloxModel | undefined> = ref(undefined)
-		const bloxVariables: Ref<Record<string, Ref<any>>> = shallowRef({})
-
-		const { processedView, model, variables } = useBlox(inputModel, inputVariables)
-		
-		bloxModel.value = model
-		bloxVariables.value = variables
-
-		// const { model, variables } = useBlox(inputModel, inputVariables)
-
-		// watch(Object.values(variables), () => {
-		// 	console.log('Changed:')
-		// 	console.log(JSON.stringify(Object.values(variables).map(v => v.value)))
-		// })
-
-		// variables['score'].value = 10
-
-		const onSwap = () => {
-			const inputVariables: any = {
-				bar: 'LAWL',
-				score: 0,
-			}
-			const inputModel: any = {
-				type: 'stack',
-				'slot:children': [
-					{
-						type: 'button',
-						'bind:message': 'bar',
-						'bind:count': 'score',
-					},
-					{
-						type: 'button',
-						'bind:message': 'bar',
-						'bind:count': 'score',
-					}
-				]
-			}
-			
-			console.log(`Before Vars are ${JSON.stringify(bloxVariables)}`)
-
-			const { processedView, model, variables } = useBlox(inputModel, inputVariables, bloxVariables.value)
-			console.log(JSON.stringify(processedView))
-			bloxModel.value = model
-			bloxVariables.value = variables
-		}
+		watch(Object.values(bindings.entries), () => {
+			console.log('Changes have been made!')
+		})
 
 		return {
-			bloxModel,
-			bloxVariables,
-			catalog,
-			onSwap,
+			bindings,
+			view,
 		}
 	},
 })
@@ -128,7 +57,6 @@ export default defineComponent({
 
 <template>
 	<main>
-		<button @click="onSwap">Swap</button>
-		<BloxView :model="bloxModel" :variables="bloxVariables"/>
+		<BloxComponent :view="view" :bindings="bindings"/>
 	</main>
 </template>

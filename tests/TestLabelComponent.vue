@@ -5,7 +5,7 @@ export default defineComponent({
 	name: 'TestLabelComponent',
 	components: undefined,
 	props: {
-		message: {
+		text: {
 			type: String,
 			required: false,
 			default: undefined,
@@ -20,5 +20,5 @@ export default defineComponent({
 </script>
 	
 <template>
-	<span>{{ message }}</span>
+	<span>{{ text }}</span>
 </template>
