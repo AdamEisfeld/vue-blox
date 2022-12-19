@@ -3,5 +3,5 @@ layout: false
 ---
 
 <ClientOnly>
-	<ClientContainer/>
+	<LandingPage/>
 </ClientOnly>

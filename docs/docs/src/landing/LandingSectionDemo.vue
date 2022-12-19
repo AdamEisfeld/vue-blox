@@ -1,6 +1,6 @@
 <script lang="ts">
 import { defineComponent, Ref, ref, watch, ShallowRef, shallowRef, computed } from 'vue'
-import { getBloxBindings, getBloxView, BloxView, BloxBindings, BloxComponent, BloxCatalog } from 'vue-blox'
+import { getBloxBindings, getBloxView, BloxView, BloxBindings, BloxComponent, BloxCatalog } from '../../../node_modules/vue-blox'
 import LayoutSection from '../layouts/LayoutSection.vue'
 import Button from '../components/Button.vue'
 import InputTextview from '../components/InputTextview.vue'

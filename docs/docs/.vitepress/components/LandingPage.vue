@@ -17,7 +17,8 @@ import DemoProfileImageComponent from '../../src/demo/DemoProfileImageComponent.
 import DemoHeadingComponent from '../../src/demo/DemoHeadingComponent.vue'
 import DemoCellComponent from '../../src/demo/DemoCellComponent.vue'
 import DemoImageComponent from '../../src/demo/DemoImageComponent.vue'
-import { getBloxCatalog } from 'vue-blox'
+
+import { getBloxCatalog } from '../../../node_modules/vue-blox'
 
 export default defineComponent({
 	name: 'LandingPage',

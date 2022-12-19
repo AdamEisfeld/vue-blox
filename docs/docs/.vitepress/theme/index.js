@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faGithub } from '@fortawesome/free-brands-svg-icons'
 import { faPlus, faMinus, faCircleInfo, faArrowsRotate, faShuffle } from '@fortawesome/free-solid-svg-icons';
 import DefaultTheme from 'vitepress/theme'
-import ClientContainer from '../components/ClientContainer.vue'
+import LandingPage from '../components/LandingPage.vue'
 
 export default {
 	...DefaultTheme,
@@ -18,7 +18,7 @@ export default {
 			faShuffle 
 		])
 		app.component('FontAwesomeIcon', FontAwesomeIcon)
-		app.component('ClientContainer', ClientContainer)
+		app.component('LandingPage', LandingPage)
 		
 	},
 }

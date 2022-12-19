@@ -4760,7 +4760,7 @@ function createAppAPI(render2, hydrate2) {
           return getExposeProxy(vnode.component) || vnode.component.proxy;
         } else if (true) {
           warn2(`App has already been mounted.
-If you want to remount the same app, move your app creation logic into a factory function and create fresh app instances for each mount - e.g. \`const createLandingPage = () => createApp(App)\``);
+If you want to remount the same app, move your app creation logic into a factory function and create fresh app instances for each mount - e.g. \`const createMyApp = () => createApp(App)\``);
         }
       },
       unmount() {
