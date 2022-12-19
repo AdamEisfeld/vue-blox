@@ -1,0 +1,50 @@
+{
+  "hash": "6dd4b9c4",
+  "browserHash": "496cc178",
+  "optimized": {
+    "vue": {
+      "src": "../../../../node_modules/vue/dist/vue.runtime.esm-bundler.js",
+      "file": "vue.js",
+      "fileHash": "221ff160",
+      "needsInterop": false
+    },
+    "vue-blox": {
+      "src": "../../../../node_modules/vue-blox/dist/vue-blox.es.js",
+      "file": "vue-blox.js",
+      "fileHash": "cb4a4820",
+      "needsInterop": false
+    },
+    "@fortawesome/fontawesome-svg-core": {
+      "src": "../../../../node_modules/@fortawesome/fontawesome-svg-core/index.mjs",
+      "file": "@fortawesome_fontawesome-svg-core.js",
+      "fileHash": "1c40c7c6",
+      "needsInterop": false
+    },
+    "@fortawesome/vue-fontawesome": {
+      "src": "../../../../node_modules/@fortawesome/vue-fontawesome/index.es.js",
+      "file": "@fortawesome_vue-fontawesome.js",
+      "fileHash": "48a55098",
+      "needsInterop": false
+    },
+    "@fortawesome/free-brands-svg-icons": {
+      "src": "../../../../node_modules/@fortawesome/free-brands-svg-icons/index.mjs",
+      "file": "@fortawesome_free-brands-svg-icons.js",
+      "fileHash": "16c170a2",
+      "needsInterop": false
+    },
+    "@fortawesome/free-solid-svg-icons": {
+      "src": "../../../../node_modules/@fortawesome/free-solid-svg-icons/index.mjs",
+      "file": "@fortawesome_free-solid-svg-icons.js",
+      "fileHash": "f0b82192",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-3T6VSYDD": {
+      "file": "chunk-3T6VSYDD.js"
+    },
+    "chunk-3YAHEKTF": {
+      "file": "chunk-3YAHEKTF.js"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "strict": true,
+    "jsx": "preserve",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "lib": ["ESNext", "DOM"],
+    "skipLibCheck": true,
+    "noEmit": true,
+	"baseUrl": "./",
+	"rootDir": "./",
+	"paths": {
+		"@components": ["src/components"],
+		"@components/*": ["src/components/*"],
+		"@layouts": ["src/layouts"],
+		"@layouts/*": ["src/layouts/*"],
+		"@demo": ["src/demo"],
+		"@demo/*": ["src/demo/*"],
+		"@icons": ["src/icons"],
+		"@icons/*": ["src/icons/*"],
+		"@landing": ["src/landing"],
+		"@landing/*": ["src/landing/*"],
+	}
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "src/**/*.vue", "App.vue.ts", "src/app/index.ts", "docs/.vitepress/theme/LayoutApp.vue.ts"],
+  "references": [{ "path": "./tsconfig.node.json" }]
+}
