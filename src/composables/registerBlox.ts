@@ -5,7 +5,7 @@ import type { BloxKeyPluginInterface } from '../interfaces/BloxKeyPluginInterfac
 import type { BloxValuePluginInterface } from '../interfaces/BloxValuePluginInterface';
 
 /**
- * A Vue plugin that registers various Vue Blox settings app-wide.
+ * Returns a Vue plugin that registers various Vue Blox settings app-wide.
  * 
  * @param options Initialization options to use when setting up Vue Blox. Specify a global catalog and array of plugins to use throoughout the application. 
  * @returns 

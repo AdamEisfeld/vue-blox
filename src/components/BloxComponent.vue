@@ -46,57 +46,71 @@ export default defineComponent({
 			default: []
 		}
 	},
-	setup(props) {
+	emits: [
+		'on:error'
+	],
+	setup(props, { emit }) {
 
 		const getPlugins = computed(() => {
-			const usePlugins: BloxValuePluginInterface[] = props.valuePlugins
-			if (usePlugins.length === 0) {
-				usePlugins.push(...BloxGlobal.shared.valuePlugins)
+			try {
+				const usePlugins: BloxValuePluginInterface[] = props.valuePlugins
+				if (usePlugins.length === 0) {
+					usePlugins.push(...BloxGlobal.shared.valuePlugins)
+				}
+				usePlugins.push(new BloxValuePluginMustache())
+				return usePlugins
+			} catch(error) {
+				emit('on:error', error)
+				return []
 			}
-			usePlugins.push(new BloxValuePluginMustache())
-			return usePlugins
 		})
 
 		const getProps = computed(() => {
 
-			const { view, bindings } = props
-			const plugins = getPlugins.value
+			try {
+				const { view, bindings } = props
+				const plugins = getPlugins.value
 
-			// "Flatten" our variables, remove reactivity so we just have a simple dictionary
-			const flattenedVariables: Record<string, any> = {}
-			const variableNames = Object.keys(bindings.entries)
-			for (let v = 0; v < variableNames.length; v += 1) {
-				const key = variableNames[v]
-				const value = bindings.entries[key]?.value ?? bindings.entries[key] // Fallback to accessing raw value, in the event Vue has removed reactivity from our variables when providing to our component. This seems to only happen in unit tests.
-				flattenedVariables[key] = value
-			}
-
-			const propNames = Object.keys(view.props)
-
-			const results: Record<string, any> = {}
-
-			for (let p = 0; p < propNames.length; p += 1) {
-				const propName = propNames[p]
-				const propValue = view.props[propName]
-				const propValueUnwrapped = propValue?.value ?? propValue
-
-				let mutablePropValue = propValueUnwrapped
-				
-				for (let r = 0; r < plugins.length; r += 1) {
-					const plugin = plugins[r]
-					mutablePropValue = plugin.handleValue(mutablePropValue, flattenedVariables)
+				// "Flatten" our variables, remove reactivity so we just have a simple dictionary
+				const flattenedVariables: Record<string, any> = {}
+				const variableNames = Object.keys(bindings.entries)
+				for (let v = 0; v < variableNames.length; v += 1) {
+					const key = variableNames[v]
+					const value = bindings.entries[key]?.value ?? bindings.entries[key] // Fallback to accessing raw value, in the event Vue has removed reactivity from our variables when providing to our component. This seems to only happen in unit tests.
+					flattenedVariables[key] = value
 				}
 
-				results[propName] = mutablePropValue
+				const propNames = Object.keys(view.props)
 
+				const results: Record<string, any> = {}
+
+				for (let p = 0; p < propNames.length; p += 1) {
+					const propName = propNames[p]
+					const propValue = view.props[propName]
+					const propValueUnwrapped = propValue?.value ?? propValue
+
+					let mutablePropValue = propValueUnwrapped
+					
+					for (let r = 0; r < plugins.length; r += 1) {
+						const plugin = plugins[r]
+						mutablePropValue = plugin.handleValue(mutablePropValue, flattenedVariables)
+					}
+
+					results[propName] = mutablePropValue
+
+				}
+
+				return results
+			} catch(error) {
+				emit('on:error', error)
+				return {}
 			}
-
-			return results
 
 		})
 
 		return {
 			getProps,
+			emit,
 		}
 	},
 })
@@ -107,7 +121,7 @@ export default defineComponent({
 	<component v-if="view" :is="catalog.getComponentForType(view.type)" v-bind="{...getProps}">
 		<template v-for="slotName in Object.keys(view.slots)" :key="slotName" v-slot:[slotName]>
 			<template v-for="slotModel in view.slots[slotName]">
-				<BloxComponent :catalog="catalog" :view="slotModel" :bindings="bindings" :valuePlugins="valuePlugins"/>
+				<BloxComponent :catalog="catalog" :view="slotModel" :bindings="bindings" :valuePlugins="valuePlugins" @on:error="(error: any) => emit('on:error', error)"/>
 			</template>
 		</template>
 	</component>

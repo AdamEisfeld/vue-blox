@@ -27,16 +27,16 @@
 	"module": "dist/vue-blox.es.js",
 	"types": "dist/index.d.ts",
 	"scripts": {
-		"lib:dev": "vite --config ./demo/vite.demo.config.ts",
+		"lib:dev": "vite --config ./sandbox/vite.sandbox.config.ts",
 		"lib:build": "vite build && npm run lib:build:types",
 		"lib:build:types": "vue-tsc --project tsconfig.build-types.json --declaration --emitDeclarationOnly --outDir dist ",
 		"lib:typecheck": "vue-tsc --project tsconfig.build-types.json --noEmit",
 		"lib:test": "vitest run",
 		"lib:coverage": "vitest run --coverage",
 		"lib:test-ci": "vitest run --coverage.enabled --coverage.reporter='text-summary'",
-		"docs:dev": "cd docs && npm run dev",
-		"docs:build": "cd docs && npm run build",
-		"docs:preview": "cd docs && npm run preview"
+		"docs:dev": "cd website && npm run dev",
+		"docs:build": "cd website && npm run build",
+		"docs:preview": "cd website && npm run preview"
 	},
 	"devDependencies": {
 		"@babel/types": "^7.20.5",
@@ -54,7 +54,7 @@
 		"vue-tsc": "^1.0.11"
 	},
 	"peerDependencies": {
-		"mustache": "^4.1.0",
-		"vue": "^3.2.45"
+		"vue": "^3.2.45",
+		"mustache": "^4.1.0"
 	}
 }
