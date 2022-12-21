@@ -76,11 +76,11 @@ export default defineComponent({
 
 <template>
 	<LayoutSection :isFullScreen="true" id="aboveFold">
-		<div class="flex flex-col flex-grow">
-			<div class="flex flex-col gap-4 items-center max-w-lg m-auto z-30">
+		<div class="flex flex-col flex-grow gap-8">
+			<div class="flex flex-col gap-4 items-center max-w-sm sm:max-w-lg m-auto z-30">
 				<div class="flex flex-row sm:flex-col gap-4 m-auto items-center w-max">
-					<IconLogo class="h-16 sm:h-32"/>
-					<span class="flex-none w-max text-3xl xl:text-6xl font-bold text-center text-gray-900">Vue Blox.</span>
+					<IconLogo class="w-16 sm:w-32"/>
+					<span class="text-4xl xl:text-6xl font-bold text-center text-gray-900">Vue Blox.</span>
 				</div>
 				<span class="text-center text-sm sm:text-base">A light-weight framework for rendering vanilla JS objects mapped to Vue Templates, with 2-way prop binding, slots, and mustache support.</span>
 				<div class="flex flex-row w-auto gap-4 m-auto pt-24">
