@@ -41,6 +41,7 @@ module.exports = {
 					{ text: 'Watching Bindings', link: '/docs/advanced/watching-bindings' },
 					{ text: 'Component-Level Catalogs', link: '/docs/advanced/component-level-catalogs' },
 					{ text: 'Plugins', link: '/docs/advanced/plugins' },
+					{ text: 'Error Handling', link: '/docs/advanced/error-handling' },
 				]
 			},
 			{

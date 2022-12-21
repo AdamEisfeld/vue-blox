@@ -34,7 +34,7 @@ export default defineComponent({
 			},
 			{
 				type: 'profile',
-				url: 'hulk.jpg',
+				url: './assets/demo/hulk.jpg',
 				name: '{{ name }}'
 			},
 			{

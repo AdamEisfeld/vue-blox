@@ -13,12 +13,12 @@ export default defineComponent({
 	emits: [],
 	setup() {
 
-		const onDocs = () => {
-			window.location.href = '/docs/what-is-vue-blox'
+		const goTo = (link: string) => {
+			window.location.href = link
 		}
 
 		return {
-			onDocs
+			goTo
 		}
 	},
 })
@@ -33,8 +33,13 @@ export default defineComponent({
 				<span class="text-xl font-semibold text-gray-600">Vue Blox</span>
 			</div>
 			<div class="flex flex-grow"></div>
-			<Href @click="onDocs()">
-				Docs
+			<Href @click="goTo('/docs')" class="text-sm">
+				<FontAwesomeIcon icon="fa-regular fa-file" class="text-brand"/>
+				<span>Docs</span>
+			</Href>
+			<Href @click="goTo('/docs/api')" class="text-sm">
+				<FontAwesomeIcon icon="fa-solid fa-code" class="text-brand"/>
+				<span>API</span>
 			</Href>
 		</div>
 	</div>
