@@ -83,7 +83,7 @@ export default defineComponent({
 					<span class="text-4xl xl:text-6xl font-bold text-center text-gray-900">Vue Blox.</span>
 				</div>
 				<span class="text-center text-sm sm:text-base">A light-weight framework for rendering vanilla JS objects mapped to Vue Templates, with 2-way prop binding, slots, and mustache support.</span>
-				<div class="flex flex-row w-auto gap-4 m-auto pt-24">
+				<div class="flex flex-col w-full sm:w-auto sm:flex-row gap-4 m-auto pt-24">
 					<Button @click="onGetStarted()">
 						<div class="flex flex-row m-auto gap-4 items-center">
 							<span>Get Started</span>
@@ -99,7 +99,7 @@ export default defineComponent({
 			</div>
 		</div>
 		<button @click="onViewDemo()" class="flex flex-col gap-4 items-center m-auto">
-			<div class="flex flex-col items-center gap-4 bg-brand m-auto w-max p-4 text-white rounded-lg aspect-square animate-bounce">
+			<div class="hidden sm:flex flex-col items-center gap-4 bg-brand m-auto w-max p-4 text-white rounded-lg animate-bounce">
 				<FontAwesomeIcon icon="fa-solid fa-arrow-down m-auto"/>
 			</div>
 			<span class="text-brand font-semibold text-sm">View Demo</span>
