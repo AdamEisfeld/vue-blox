@@ -2,8 +2,8 @@
 
 It can be useful to monitor your bindings as they are modified by the various injected components:
 
-**App.vue:**
-```ts
+```ts{36-39}
+// App.vue
 <script lang="ts">
 import { defineComponent, watch } from 'vue'
 import { BloxComponent, getBloxBindings, getBloxView } from 'vue-blox'

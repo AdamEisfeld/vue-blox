@@ -64,8 +64,8 @@ app.mount('#app')
 
 Then you might insert nested input views into the 'children' slot like so:
 
- **App.vue:**
-```ts{19-28}
+```ts{20-29}
+// App.vue
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { BloxComponent, getBloxBindings, getBloxView } from 'vue-blox'

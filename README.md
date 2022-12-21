@@ -15,4 +15,4 @@ npm install vue-blox
 
 ## Documentation
 
-Please visit the vue-blox site for up-to-date docs and examples.
+Please visit the vue-blox site at [vueblox.io](https://www.vueblox.io) for up-to-date docs and examples.

@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, ComponentPublicInstance } from 'vue'
+import { defineComponent, ComponentPublicInstance, onMounted } from 'vue'
 import LayoutSection from '../layouts/LayoutSection.vue'
 import IconLogo from '../icons/IconLogo.vue'
 import Button from '../components/Button.vue'
@@ -21,31 +21,52 @@ export default defineComponent({
 	emits: [],
 	setup(props) {
 
-		const onGetStarted = () => {
-			const main = document.getElementById('main')
+		const getNavbarHeight = () => {
 			const navbar = document.getElementById('navbar')
+
+			if (!navbar) {
+				return 0
+			}
+
+			return navbar.scrollHeight
+		}
+
+		const onViewDemo = () => {
+			const main = document.getElementById('main')
 			const element = document.getElementById('scrollTarget')
 
-			if (!main || !navbar || !element) {
+			if (!main || !element) {
 				return
 			}
 
 			const scrollTo = element.offsetTop
-			const navHeight = navbar.scrollHeight
 
 			main?.scrollTo({
-				top: scrollTo - navHeight,
+				top: scrollTo - getNavbarHeight(),
 				left: 0,
 				behavior: 'smooth'
 			})
+		}
+
+		const onGetStarted = () => {
+			window.location.href = '/docs/getting-started'
 		}
 
 		const onGitHub = () => {
 			window.open('https://github.com/AdamEisfeld/vue-blox', '_blank')
 		}
 
+		onMounted(() => {
+			const aboveFoldElement = document.getElementById('aboveFold')
+			if (!aboveFoldElement) {
+				return
+			}
+			aboveFoldElement.style.paddingTop = `${getNavbarHeight()}px`
+		})
+
 		return {
 			onGetStarted,
+			onViewDemo,
 			onGitHub
 		}
 	},
@@ -54,20 +75,32 @@ export default defineComponent({
 </script>
 
 <template>
-	<LayoutSection :isFullScreen="true">
-		<div class="flex flex-col gap-4 items-center max-w-lg m-auto z-30">
-			<IconLogo class="h-32"/>
-			<span class="text-5xl xl:text-6xl font-bold text-center text-gray-900">Vue Blox.</span>
-			<span class="text-center">A light-weight framework for rendering vanilla JS objects mapped to Vue Templates, with 2-way prop binding, slots, and mustache support.</span>
-			<div class="flex flex-row gap-8 m-auto pt-24">
-				<Button @click="onGetStarted()">
-					<span>Demo</span>
-				</Button>
-				<Button :isFilled="false" @click="onGitHub()">
-					<FontAwesomeIcon icon="fa-brands fa-github" />
-					<span>Github</span>
-				</Button>
+	<LayoutSection :isFullScreen="true" id="aboveFold">
+		<div class="flex flex-col flex-grow">
+			<div class="flex flex-col gap-4 items-center max-w-lg m-auto z-30">
+				<IconLogo class="h-32"/>
+				<span class="text-5xl xl:text-6xl font-bold text-center text-gray-900">Vue Blox.</span>
+				<span class="text-center">A light-weight framework for rendering vanilla JS objects mapped to Vue Templates, with 2-way prop binding, slots, and mustache support.</span>
+				<div class="flex flex-col w-full sm:w-auto sm:flex-row gap-4 m-auto pt-24">
+					<Button @click="onGetStarted()">
+						<div class="flex flex-row m-auto gap-4 items-center">
+							<span>Get Started</span>
+						</div>
+					</Button>
+					<Button :isFilled="false" @click="onGitHub()">
+						<div class="flex flex-row m-auto gap-4 items-center">
+							<FontAwesomeIcon icon="fa-brands fa-github" />
+							<span>Github</span>
+						</div>
+					</Button>
+				</div>
 			</div>
 		</div>
+		<button @click="onViewDemo()" class="flex flex-col gap-4 items-center m-auto">
+			<div class="flex flex-col items-center gap-4 bg-brand m-auto w-max p-4 text-white rounded-lg aspect-square animate-bounce">
+				<FontAwesomeIcon icon="fa-solid fa-arrow-down m-auto"/>
+			</div>
+			<span class="text-brand font-semibold text-sm">View Demo</span>
+		</button>
 	</LayoutSection>
 </template>

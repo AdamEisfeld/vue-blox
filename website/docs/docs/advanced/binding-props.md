@@ -15,7 +15,7 @@ For example, say we had this simple Vue component that:
 - Emits an "update:text" event when the text in the input box is modified:
 
 ```ts
-// InputTextbox.vue
+// MyInputComponent.vue
 <script lang="ts">
 import { defineComponent } from 'vue'
 
@@ -52,11 +52,11 @@ export default defineComponent({
 
 And you mapped this component to the "input" type in Vue Blox:
 
-```ts
+```ts{4,10}
 import App  from  './App.vue'
 import { createApp } from  'vue'
 import { registerBlox } from  'vue-blox'
-import MyInputComponent from './MyStackComponent.vue'
+import MyInputComponent from './MyInputComponent.vue'
 
 const app = createApp(App)
 
@@ -70,9 +70,9 @@ app.use(blox)
 app.mount('#app')
 ```
 
-You could then construct an "input bindings" object (any JS object) containing a "message" key/value pair, construct a BloxBindings object from this input, and pass this bindings object to getBloxView(...) along with an input view that has a "bind:text" key/value pair with a value of "message":
+You could then construct an "input bindings" object (any JS object) containing a "message" key/value pair, construct a BloxBindings object from this input, and pass this bindings object to [getBloxView(...)](/docs/api/composables/get-blox-view) along with an input view that has a **"bind:text"** key/value pair with a value of **"message"**:
 
-```ts
+```ts{3,4,12-15,24,27-31,35}
 // App.vue
 <script lang="ts">
 import { defineComponent, watch } from 'vue'
@@ -113,7 +113,7 @@ export default defineComponent({
 })
 </script>
 ```
-```html
+```html{5}
 <template>
 	<main>
 		<!-- A MyInputComponent will be rendered. As the user enters text,
