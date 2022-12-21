@@ -66,6 +66,6 @@ export default defineComponent({
 		:startingModels="startingModels"
 		:selectableComponents="selectableComponents"
 		title="Bind Variables"
-		caption="Configure one or more variables to be bound to your components using the <span class='font-bold'>:bind</span> specifier. Multiple components can bind to the same variable!"
+		caption="Configure one or more variables to be bound to your components using the <span class='font-bold'>bind:</span> specifier. Multiple components can bind to the same variable!"
 	/>
 </template>

@@ -16,6 +16,17 @@ module.exports = {
 				]
 			},
 			{
+				text: 'Advanced',
+				items: [
+					{ text: 'Binding Props', link: '/docs/advanced/binding-props' },
+					{ text: 'Providing Slots', link: '/docs/advanced/providing-slots' },
+					{ text: 'Using Mustache', link: '/docs/advanced/using-mustache' },
+					{ text: 'Watching Bindings', link: '/docs/advanced/watching-bindings' },
+					{ text: 'Component-Level Catalogs', link: '/docs/advanced/component-level-catalogs' },
+					{ text: 'Plugins', link: '/docs/advanced/plugins' },
+				]
+			},
+			{
 				text: 'API',
 				items: [
 					{
@@ -49,6 +60,13 @@ module.exports = {
 							{ text: 'BloxValuePluginInterface', link: '/docs/api/interfaces/blox-value-plugin-interface' },
 						]
 					}
+				]
+			},
+			{
+				text: 'Resources',
+				items: [
+					{ text: 'Github', link: 'https://github.com/AdamEisfeld/vue-blox' },
+					{ text: 'NPM', link: 'https://www.npmjs.com/package/vue-blox' },
 				]
 			},
 		],

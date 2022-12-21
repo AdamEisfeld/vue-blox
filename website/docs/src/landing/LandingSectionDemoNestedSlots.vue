@@ -127,6 +127,6 @@ export default defineComponent({
 		:startingModels="startingModels"
 		:selectableComponents="selectableComponents"
 		title="Nested Slots"
-		caption="Use the <span class='font-bold'>:slot</span> specifier to insert child components into the slots of parent components."
+		caption="Use the <span class='font-bold'>slot:</span> specifier to insert child components into the slots of parent components."
 	/>
 </template>
