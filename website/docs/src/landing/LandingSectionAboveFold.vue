@@ -61,11 +61,11 @@ export default defineComponent({
 			<span class="text-center">A light-weight framework for rendering vanilla JS objects mapped to Vue Templates, with 2-way prop binding, slots, and mustache support.</span>
 			<div class="flex flex-row gap-8 m-auto pt-24">
 				<Button @click="onGetStarted()">
-					<span>Live Demo</span>
+					<span>Demo</span>
 				</Button>
 				<Button :isFilled="false" @click="onGitHub()">
 					<FontAwesomeIcon icon="fa-brands fa-github" />
-					<span>View Github</span>
+					<span>Github</span>
 				</Button>
 			</div>
 		</div>

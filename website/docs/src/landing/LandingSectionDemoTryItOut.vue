@@ -27,7 +27,7 @@ export default defineComponent({
 			},
 			{
 				type: 'image',
-				url: 'big-lebowski.gif'
+				url: './assets/demo/big-lebowski.gif'
 			}
 		]
 
@@ -43,7 +43,7 @@ export default defineComponent({
 				name: 'Image',
 				model: {
 					type: 'image',
-					url: 'hulk.jpg'
+					url: './assets/demo/hulk.jpg'
 				}
 			}
 		]
