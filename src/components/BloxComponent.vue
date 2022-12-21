@@ -118,7 +118,7 @@ export default defineComponent({
 </script>
 	
 <template>
-	<component v-if="view" :is="catalog.getComponentForType(view.type)" v-bind="{...getProps}">
+	<component v-if="view" :is="catalog.getComponentForType(view.type)" v-bind="getProps">
 		<template v-for="slotName in Object.keys(view.slots)" :key="slotName" v-slot:[slotName]>
 			<template v-for="slotModel in view.slots[slotName]">
 				<BloxComponent :catalog="catalog" :view="slotModel" :bindings="bindings" :valuePlugins="valuePlugins" @on:error="(error: any) => emit('on:error', error)"/>
