@@ -78,10 +78,12 @@ export default defineComponent({
 	<LayoutSection :isFullScreen="true" id="aboveFold">
 		<div class="flex flex-col flex-grow">
 			<div class="flex flex-col gap-4 items-center max-w-lg m-auto z-30">
-				<IconLogo class="h-32"/>
-				<span class="text-5xl xl:text-6xl font-bold text-center text-gray-900">Vue Blox.</span>
-				<span class="text-center">A light-weight framework for rendering vanilla JS objects mapped to Vue Templates, with 2-way prop binding, slots, and mustache support.</span>
-				<div class="flex flex-col w-full sm:w-auto sm:flex-row gap-4 m-auto pt-24">
+				<div class="flex flex-row sm:flex-col gap-4 m-auto items-center w-max">
+					<IconLogo class="h-16 sm:h-32"/>
+					<span class="flex-none w-max text-3xl xl:text-6xl font-bold text-center text-gray-900">Vue Blox.</span>
+				</div>
+				<span class="text-center text-sm sm:text-base">A light-weight framework for rendering vanilla JS objects mapped to Vue Templates, with 2-way prop binding, slots, and mustache support.</span>
+				<div class="flex flex-row w-auto gap-4 m-auto pt-24">
 					<Button @click="onGetStarted()">
 						<div class="flex flex-row m-auto gap-4 items-center">
 							<span>Get Started</span>
