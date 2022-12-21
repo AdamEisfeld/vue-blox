@@ -1,4 +1,4 @@
-<div class="animate-bounce inline-block"><img src="../../assets/brand/logo.svg" class="w-12 m-4 ml-12 max-w-full"/></div>
+<div class="animate-bounce inline-block"><img src="./logo.svg" class="w-12 m-4 ml-12 max-w-full"/></div>
 
 # What Is Vue Blox?
 
