@@ -6,6 +6,7 @@ import { BloxKeyPluginBind } from '../classes/BloxKeyPluginBind'
 import { BloxKeyPluginSlot } from '../classes/BloxKeyPluginSlot'
 import { BloxError } from '../classes/BloxError'
 import { BloxGlobal } from '../classes/BloxGlobal'
+import type { BloxConfig } from '../classes/BloxConfig'
 
 /**
  * Converts a regular JS object into a view model for a BloxComponent's view property.
@@ -13,10 +14,11 @@ import { BloxGlobal } from '../classes/BloxGlobal'
  * @param inputView The object to convert to a Vue Blox view model ready to be passed to a BloxComponent.
  * @param bindings An optional BloxBindings instance of reactive variables to provide to the BloxComponent.
  * @param plugins An optional array of processing plugins to use before Vue Blox carries out it's processing.
+ * @param config An optional config object to further customize how blox are handled
  * Plugins allow you to add your own processing logic for new key types.
  * @returns A new BloxView instance ready to be passed to a BloxComponent.
  */
-export function getBloxView(inputView: any, bindings?: BloxBindings, plugins?: BloxKeyPluginInterface[]): BloxView {
+export function getBloxView(inputView: any, bindings?: BloxBindings, plugins?: BloxKeyPluginInterface[], config?: BloxConfig): BloxView {
 
 	const usePlugins: BloxKeyPluginInterface[] = plugins ?? []
 	usePlugins.push(...[
@@ -28,7 +30,7 @@ export function getBloxView(inputView: any, bindings?: BloxBindings, plugins?: B
 
 	const useBindings = bindings ?? new BloxBindings()
 
-	const type = inputView['type']
+	const type = inputView[config?.componentSpecifier ?? 'type']
 	if (typeof type !== 'string') {
 		throw new BloxError(
 			'View parsing failed.',
@@ -47,7 +49,7 @@ export function getBloxView(inputView: any, bindings?: BloxBindings, plugins?: B
 	for (let k = 0; k < keys.length; k += 1) {
 
 		const key = keys[k]
-		if (key === 'type') {
+		if (key === (config?.componentSpecifier ?? 'type')) {
 			// Skip the type key, it is reserved for Vue Blox parsing to determine the correct component to use
 			continue
 		}
@@ -57,8 +59,8 @@ export function getBloxView(inputView: any, bindings?: BloxBindings, plugins?: B
 		for (let p = 0; p < usePlugins.length; p += 1) {
 			const plugin = usePlugins[p]
 			const evaluation = plugin.handleKey(key, value, useBindings, (nestedInputView: any) => {
-				return getBloxView(nestedInputView, useBindings, plugins)
-			})
+				return getBloxView(nestedInputView, useBindings, plugins, config)
+			}, config)
 			if (evaluation) {
 				Object.assign(props, evaluation.props)
 				Object.assign(slots, evaluation.slots)

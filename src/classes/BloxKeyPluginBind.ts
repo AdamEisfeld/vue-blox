@@ -3,6 +3,7 @@ import type { BloxKeyPluginInterface } from '../interfaces/BloxKeyPluginInterfac
 import type { BloxBindings } from './BloxBindings'
 import type { BloxView } from './BloxView'
 import { BloxError } from './BloxError'
+import type { BloxConfig } from './BloxConfig'
 
 /**
  * A key plugin that searches for keys that start with 'bind:' and prepares the resulting prop to be 2-way bound to the matching
@@ -10,16 +11,17 @@ import { BloxError } from './BloxError'
  */
 export class BloxKeyPluginBind implements BloxKeyPluginInterface {
 
-	handleKey(key: string, value: any, bindings: BloxBindings, getNestedBloxView: (inputView: any) => BloxView ): { props: Record<string, any> | undefined, slots: Record<string, BloxView[]> | undefined } | undefined {
+	handleKey(key: string, value: any, bindings: BloxBindings, getNestedBloxView: (inputView: any) => BloxView, config?: BloxConfig ): { props: Record<string, any> | undefined, slots: Record<string, BloxView[]> | undefined } | undefined {
 		
-		if (!key.startsWith('bind:')) {
+		const bindSpecifier = config?.bindSpecifier ?? 'bind:'
+		if (!key.startsWith(bindSpecifier)) {
 			return undefined
 		}
 
 		// This is a bound prop. 
 
 		// 1. Get the prop name
-		const propName = key.substring('bind:'.length, key.length)
+		const propName = key.substring(bindSpecifier.length, key.length)
 		if (propName.length === 0) {
 			throw new BloxError(
 				'Bind parsing failed.',

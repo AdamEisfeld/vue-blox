@@ -3,7 +3,6 @@ import { defineComponent, computed } from 'vue'
 import { BloxBindings } from '../classes/BloxBindings'
 import { BloxView } from '../classes/BloxView'
 import { BloxGlobal } from '../classes/BloxGlobal'
-import { BloxValuePluginMustache } from '../classes/BloxValuePluginMustache'
 import type { BloxCatalog } from '../classes/BloxCatalog'
 import type { BloxValuePluginInterface } from '../interfaces/BloxValuePluginInterface'
 
@@ -57,7 +56,6 @@ export default defineComponent({
 				if (usePlugins.length === 0) {
 					usePlugins.push(...BloxGlobal.shared.valuePlugins)
 				}
-				usePlugins.push(new BloxValuePluginMustache())
 				return usePlugins
 			} catch(error) {
 				emit('on:error', error)

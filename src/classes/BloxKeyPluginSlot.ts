@@ -1,7 +1,7 @@
 import type { BloxKeyPluginInterface } from '../interfaces/BloxKeyPluginInterface'
 import type { BloxBindings } from './BloxBindings'
 import type { BloxView } from './BloxView'
-import { BloxError } from './BloxError'
+import type { BloxConfig } from './BloxConfig'
 
 /**
  * A key plugin that searches for keys that start with 'slot:' and recursively creates additional BloxViews to be injected into
@@ -12,16 +12,17 @@ import { BloxError } from './BloxError'
  */
 export class BloxKeyPluginSlot implements BloxKeyPluginInterface {
 
-	handleKey(key: string, value: any, bindings: BloxBindings, getNestedBloxView: (inputView: any) => BloxView ): { props: Record<string, any> | undefined, slots: Record<string, BloxView[]> | undefined } | undefined {
+	handleKey(key: string, value: any, bindings: BloxBindings, getNestedBloxView: (inputView: any) => BloxView, config?: BloxConfig ): { props: Record<string, any> | undefined, slots: Record<string, BloxView[]> | undefined } | undefined {
 		
-		if (!key.startsWith('slot:')) {
+		const slotSpecifier = config?.bindSpecifier ?? 'slot:'
+		if (!key.startsWith(slotSpecifier)) {
 			return undefined
 		}
 
 		// This is a child slot
 
 		// 1. Get the slot name
-		let slotName = key.substring('slot:'.length, key.length)
+		let slotName = key.substring(slotSpecifier.length, key.length)
 		if (slotName.length === 0) {
 			slotName = 'default'
 		}
