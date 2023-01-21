@@ -27,16 +27,16 @@ export default defineComponent({
 
 		const inputView: any = {
 			type: 'stack',
-			'slot:children': [
+			'test:children': [
 				{
 					type: 'button',
-					'bind:message': 'foo',
-					'bind:count': 'score',
+					'binder:message': 'foo',
+					'binder:count': 'score',
 				},
 				{
 					type: 'button',
 					'message': '{{ bar }} and {{ baz }}',
-					'bind:count': 'score',
+					'binder:count': 'score',
 				}
 			]
 		}
@@ -48,8 +48,8 @@ export default defineComponent({
 			bindings = getBloxBindings(inputVariables)
 			view = getBloxView(inputView, bindings, undefined, {
 				componentSpecifier: 'type',
-				bindSpecifier: 'bind:',
-				slotSpecifier: 'slot:',
+				slotSpecifier: 'test:',
+				bindSpecifier: 'binder:'
 			})
 		} catch(error) {
 			console.log(error)

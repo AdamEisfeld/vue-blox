@@ -14,15 +14,18 @@ export class BloxKeyPluginSlot implements BloxKeyPluginInterface {
 
 	handleKey(key: string, value: any, bindings: BloxBindings, getNestedBloxView: (inputView: any) => BloxView, config?: BloxConfig ): { props: Record<string, any> | undefined, slots: Record<string, BloxView[]> | undefined } | undefined {
 		
+		console.log(`Config: ${Object.keys(config ?? {})} - ${Object.values(config ?? {})}`)
 		const slotSpecifier = config?.slotSpecifier ?? 'slot:'
+		console.log(`Specifier: ${slotSpecifier}`)
 		if (!key.startsWith(slotSpecifier)) {
 			return undefined
 		}
-
+		
 		// This is a child slot
 
 		// 1. Get the slot name
 		let slotName = key.substring(slotSpecifier.length, key.length)
+		console.log(`Slot Name: ${slotName}`)
 		if (slotName.length === 0) {
 			slotName = 'default'
 		}
