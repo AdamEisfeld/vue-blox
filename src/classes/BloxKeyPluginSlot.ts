@@ -14,7 +14,7 @@ export class BloxKeyPluginSlot implements BloxKeyPluginInterface {
 
 	handleKey(key: string, value: any, bindings: BloxBindings, getNestedBloxView: (inputView: any) => BloxView, config?: BloxConfig ): { props: Record<string, any> | undefined, slots: Record<string, BloxView[]> | undefined } | undefined {
 		
-		const slotSpecifier = config?.bindSpecifier ?? 'slot:'
+		const slotSpecifier = config?.slotSpecifier ?? 'slot:'
 		if (!key.startsWith(slotSpecifier)) {
 			return undefined
 		}

@@ -47,9 +47,9 @@ export default defineComponent({
 		try {
 			bindings = getBloxBindings(inputVariables)
 			view = getBloxView(inputView, bindings, undefined, {
-				slotSpecifier: 'slot:',
+				componentSpecifier: 'type',
 				bindSpecifier: 'bind:',
-				componentSpecifier: 'type'
+				slotSpecifier: 'slot:',
 			})
 		} catch(error) {
 			console.log(error)
