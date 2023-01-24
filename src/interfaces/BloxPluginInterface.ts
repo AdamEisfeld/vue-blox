@@ -1,6 +1,5 @@
 /**
- * Implement this interface to provide additional functionality in determining how to parse / handle a given key of a view when
- * preparing a BloxView instance.
+ * Implement this interface to provide additional functionality in determining how to parse / handle a given key/value of a view
  */
 export interface BloxPluginInterface {
 

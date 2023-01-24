@@ -48,16 +48,6 @@ export class BloxPluginBind implements BloxPluginInterface {
 		setProp(`onUpdate:${propName}`, (newValue: any) => {
 			variables[variableName] = newValue
 		})
-
-		// const typeErased: any = bindings.entries
-		// setProp(propName, typeErased.value ? typeErased.value[variableName] : typeErased[variableName])
-		// setProp(`onUpdate:${propName}`, (newValue: any) => {
-		// 	if (typeErased.value) {
-		// 		typeErased.value[variableName] = newValue
-		// 	} else {
-		// 		typeErased[variableName] = newValue
-		// 	}
-		// })
 		
 	}
 
