@@ -13,8 +13,11 @@
     "@fortawesome/free-regular-svg-icons": "^6.2.1",
     "@fortawesome/free-solid-svg-icons": "^6.2.1",
     "@fortawesome/vue-fontawesome": "^3.0.2",
+    "expr-eval": "^2.0.2",
     "mustache": "^4.1.0",
-    "vue-blox": "^0.5.1"
+    "vue-blox": "^0.6.0",
+    "vue-blox-expressions": "^0.0.2",
+    "vue-blox-mustache": "^0.1.1"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.1",

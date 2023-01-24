@@ -1,6 +1,5 @@
-import type { BloxKeyPluginInterface } from "../interfaces/BloxKeyPluginInterface"
-import type { BloxValuePluginInterface } from "../interfaces/BloxValuePluginInterface"
-import { BloxCatalog } from "./BloxCatalog"
+import type { BloxPluginInterface } from "../interfaces/BloxPluginInterface"
+import type { ComponentPublicInstance } from 'vue'
 
 /**
  * This class stores any globals used when installing Vue Blox app-wide
@@ -9,8 +8,7 @@ export class BloxGlobal {
 
 	static shared = new BloxGlobal()
 
-	catalog: BloxCatalog = new BloxCatalog()
-	keyPlugins: BloxKeyPluginInterface[] = []
-	valuePlugins: BloxValuePluginInterface[] = []
+	catalog: Record<string, ComponentPublicInstance<any>> = {}
+	plugins: BloxPluginInterface[] = []
 
 }

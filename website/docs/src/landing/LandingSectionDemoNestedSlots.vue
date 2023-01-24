@@ -1,6 +1,5 @@
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { BloxCatalog } from 'vue-blox'
+import { ComponentPublicInstance, defineComponent } from 'vue'
 import LandingSectionDemo from '../landing/LandingSectionDemo.vue'
 
 export default defineComponent({
@@ -10,7 +9,7 @@ export default defineComponent({
 	},
 	props: {
 		catalog: {
-			type: Object as () => BloxCatalog,
+			type: Object as () => Record<string, ComponentPublicInstance<any>>,
 			required: true,
 		}
 	},

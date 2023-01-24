@@ -1,10 +1,9 @@
 <script lang="ts">
-import { defineComponent, computed } from 'vue'
-import { BloxBindings } from '../classes/BloxBindings'
-import { BloxView } from '../classes/BloxView'
+import { defineComponent, computed, type ComponentPublicInstance } from 'vue'
 import { BloxGlobal } from '../classes/BloxGlobal'
-import type { BloxCatalog } from '../classes/BloxCatalog'
-import type { BloxValuePluginInterface } from '../interfaces/BloxValuePluginInterface'
+import { BloxPluginBind } from '../classes/BloxPluginBind'
+import { BloxPluginSlot } from '../classes/BloxPluginSlot'
+import type { BloxPluginInterface } from '../interfaces/BloxPluginInterface'
 
 /**
  * A dynamic Vue component that renders an external Vue component based on the 'type' field on the view object provided in
@@ -14,9 +13,9 @@ import type { BloxValuePluginInterface } from '../interfaces/BloxValuePluginInte
  * - catalog: The catalog to use when determining which component to inject. If no catalog is provided, the global catalog
  * configured via registerBlox(...) will be used.
  * - view: The view data to inject into the Vue component
- * - bindings: Any reactive variables that the view's props will be getting data from / sending data to
- * - valuePlugins: An optional array of value plugins to use on every prop value for the view before passing those prop values
- * into the view's component. If no key plugins are specified, then the global key plugins configured via registerBlox(...)
+ * - variables: Any variables that the view's props will be getting data from / sending data to. Can be reactive.
+ * - plugins: An optional array of value plugins to use on every prop value for the view before passing those prop values
+ * into the view's component. If no plugins are specified, then the global plugins configured via registerBlox(...)
  * will be used, if any.
  * 
  */
@@ -25,25 +24,25 @@ export default defineComponent({
 	components: undefined,
 	props: {
 		catalog: {
-			type: Object as () => BloxCatalog,
+			type: Object as () => Record<string, ComponentPublicInstance<any>>,
 			required: false,
 			default: BloxGlobal.shared.catalog,
 		},
 		view: {
-			type: Object as () => BloxView,
+			type: Object as () => any,
 			required: false,
-			default: new BloxView(),
+			default: undefined,
 		},
-		bindings: {
-			type: Object as () => BloxBindings,
+		variables: {
+			type: Object as () => any,
 			required: false,
-			default: new BloxBindings(),
+			default: {},
 		},
-		valuePlugins: {
-			type: Object as () => BloxValuePluginInterface[],
+		plugins: {
+			type: Object as () => BloxPluginInterface[],
 			required: false,
 			default: []
-		}
+		},
 	},
 	emits: [
 		'on:error'
@@ -52,10 +51,12 @@ export default defineComponent({
 
 		const getPlugins = computed(() => {
 			try {
-				const usePlugins: BloxValuePluginInterface[] = props.valuePlugins
+				const usePlugins: BloxPluginInterface[] = props.plugins
 				if (usePlugins.length === 0) {
-					usePlugins.push(...BloxGlobal.shared.valuePlugins)
+					usePlugins.push(...BloxGlobal.shared.plugins)
 				}
+				usePlugins.push(new BloxPluginBind())
+				usePlugins.push(new BloxPluginSlot())
 				return usePlugins
 			} catch(error) {
 				emit('on:error', error)
@@ -63,51 +64,61 @@ export default defineComponent({
 			}
 		})
 
-		const getProps = computed(() => {
+		const getView = computed((): { isSet: boolean, type: string | undefined, props: Record<string, any> | undefined, slots: Record<string, any[]> | undefined } => {
 
-			try {
-				const { view, bindings } = props
-				const plugins = getPlugins.value
-
-				// "Flatten" our variables, remove reactivity so we just have a simple dictionary
-				const flattenedVariables: Record<string, any> = {}
-				const variableNames = Object.keys(bindings.entries)
-				for (let v = 0; v < variableNames.length; v += 1) {
-					const key = variableNames[v]
-					const value = bindings.entries[key]?.value ?? bindings.entries[key] // Fallback to accessing raw value, in the event Vue has removed reactivity from our variables when providing to our component. This seems to only happen in unit tests.
-					flattenedVariables[key] = value
+			const { view, variables } = props
+			
+			if (!view) {
+				return {
+					isSet: false,
+					type: undefined,
+					props: undefined,
+					slots: undefined
 				}
+			}
 
-				const propNames = Object.keys(view.props)
+			const { type } = view
+			const plugins = getPlugins.value
 
-				const results: Record<string, any> = {}
+			const viewKeys = Object.keys(view)
 
-				for (let p = 0; p < propNames.length; p += 1) {
-					const propName = propNames[p]
-					const propValue = view.props[propName]
-					const propValueUnwrapped = propValue?.value ?? propValue
+			const computedProps: Record<string, any> = {}
+			Object.assign(computedProps, view)
+			const computedSlots: Record<string, any[]> = {}
 
-					let mutablePropValue = propValueUnwrapped
-					
-					for (let r = 0; r < plugins.length; r += 1) {
-						const plugin = plugins[r]
-						mutablePropValue = plugin.handleValue(mutablePropValue, flattenedVariables)
-					}
-
-					results[propName] = mutablePropValue
-
+			const setProp = (propName: string, value: any) => {
+				if (value) {
+					computedProps[propName] = value
+				} else {
+					delete computedProps[propName]
 				}
+			}
 
-				return results
-			} catch(error) {
-				emit('on:error', error)
-				return {}
+			const setSlot = (slotName: string, views: any[]) => {
+				computedSlots[slotName] = views
+			}
+
+			for (let k = 0; k < viewKeys.length; k += 1) {
+				const key = viewKeys[k]
+				let value = view[key]
+
+				for (let p = 0; p < plugins.length; p += 1) {
+					const plugin = plugins[p]
+					plugin.run(key, value, variables, setProp, setSlot)
+				}
+			}
+
+			return {
+				isSet: true,
+				type: type,
+				props: computedProps,
+				slots: computedSlots,
 			}
 
 		})
 
 		return {
-			getProps,
+			getView,
 			emit,
 		}
 	},
@@ -116,10 +127,10 @@ export default defineComponent({
 </script>
 	
 <template>
-	<component v-if="view" :is="catalog.getComponentForType(view.type)" v-bind="getProps">
-		<template v-for="slotName in Object.keys(view.slots)" :key="slotName" v-slot:[slotName]>
-			<template v-for="slotModel in view.slots[slotName]">
-				<BloxComponent :catalog="catalog" :view="slotModel" :bindings="bindings" :valuePlugins="valuePlugins" @on:error="(error: any) => emit('on:error', error)"/>
+	<component v-if="getView.isSet && getView.type" :is="catalog[getView.type]" v-bind="getView.props">
+		<template v-for="slotName in Object.keys(getView.slots ?? {})" :key="slotName" v-slot:[slotName]>
+			<template v-for="slotModel in (getView.slots ?? {})[slotName]">
+				<BloxComponent :catalog="catalog" :view="slotModel" :variables="variables" :plugins="plugins" @on:error="(error: any) => emit('on:error', error)"/>
 			</template>
 		</template>
 	</component>

@@ -9,11 +9,10 @@ import { BloxCatalog } from 'vue-blox'
 
 // Construct a new catalog
 
-const catalog = new BloxCatalog()
-catalog.register({
+const catalog = {
 	'label': SomeLabelComponent,
 	'button': SomeButtonComponent
-})
+}
 
 // Obtain the component mapped to a given type
 

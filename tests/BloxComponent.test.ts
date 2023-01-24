@@ -1,7 +1,8 @@
 import { test, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
-import { getBloxBindings, getBloxView, getBloxCatalog, BloxComponent } from '../src'
-import { TestValuePlugin } from './TestValuePlugin'
+import { reactive } from 'vue'
+import { BloxComponent } from '../src'
+import { TestPluginSmileys } from './TestPluginSmileys'
 import TestLabelComponent from './TestLabelComponent.vue'
 import TestButtonCounterComponent from './TestButtonCounterComponent.vue'
 import TestStackComponent from 'tests/TestStackComponent.vue'
@@ -21,9 +22,9 @@ test('Simple blox component is rendered', async () => {
 
 	// Given
 
-	const catalog = getBloxCatalog({
+	const catalog = {
 		'label' : TestLabelComponent
-	})
+	}
 
 	const inputView = {
 		'type': 'label',
@@ -32,14 +33,12 @@ test('Simple blox component is rendered', async () => {
 	
 	// When
 
-	const view = getBloxView(inputView, undefined, undefined)
-
 	const wrapper = mount(BloxComponent, {
 		props: {
 			catalog: catalog,
-			view: view,
-			bindings: undefined,
-			valuePlugins: undefined,
+			view: inputView,
+			variables: undefined,
+			plugins: undefined,
 		},
 	})
 
@@ -51,42 +50,42 @@ test('Simple blox component is rendered', async () => {
 
 test('Blox component with bindings is rendered, and modifying bindings programmatically updates render', async () => {
 
+	console.log('Start')
 	// Given
 
-	const catalog = getBloxCatalog({
+	const catalog = {
 		'label' : TestLabelComponent
-	})
-
-	const inputBindings = {
-		'message': 'Hello, world!'
 	}
 
-	const inputView = {
+	const variables = reactive({
+		'message': 'Hello, world!'
+	})
+
+	const view = {
 		'type': 'label',
 		'bind:text': 'message'
 	}
 	
 	// When
 
-	const bindings = getBloxBindings(inputBindings)
-	const view = getBloxView(inputView, bindings, undefined)
-
 	const wrapper = mount(BloxComponent, {
 		props: {
 			catalog: catalog,
 			view: view,
-			bindings: bindings,
-			valuePlugins: undefined,
+			variables: variables,
+			plugins: undefined,
 		},
 	})
 
 	// Then
 
+	await wrapper.vm.$nextTick()
+
 	expect(wrapper.text()).toContain('Hello, world!')
 
 	// And when
 
-	bindings.entries.message.value = 'Updated message'
+	variables.message = 'Updated message'
 	await wrapper.vm.$nextTick()
 
 	// Then
@@ -99,45 +98,44 @@ test('Blox component with bindings is rendered, and modifying bindings within co
 
 	// Given
 
-	const catalog = getBloxCatalog({
+	const catalog = {
 		'buttonCounter' : TestButtonCounterComponent
-	})
-
-	const inputBindings = {
-		'testCount': 5
 	}
 
-	const inputView = {
+	const variables = reactive({
+		'testCount': 5
+	})
+
+	const view = {
 		'type': 'buttonCounter',
 		'bind:count': 'testCount'
 	}
 	
 	// When
 
-	const bindings = getBloxBindings(inputBindings)
-	const view = getBloxView(inputView, bindings, undefined)
+	// const bindings = getBloxBindings(inputBindings)
 
 	const wrapper = mount(BloxComponent, {
 		props: {
 			catalog: catalog,
 			view: view,
-			bindings: bindings,
-			valuePlugins: undefined,
+			variables: variables,
+			plugins: undefined,
 		},
 	})
 
 	// Then
 
-	expect(bindings.entries.testCount.value).toBe(5)
+	expect(variables.testCount).toBe(5)
 
 	// And when
 
 	const button = wrapper.findComponent(TestButtonCounterComponent)
 	button.trigger('click')
-
+	
 	// Then
 
-	expect(bindings.entries.testCount.value).toBe(6)
+	expect(variables.testCount).toBe(6)
 
 })
 
@@ -145,12 +143,12 @@ test('Blox component with single slot is rendered', async () => {
 
 	// Given
 
-	const catalog = getBloxCatalog({
+	const catalog = {
 		'label' : TestLabelComponent,
 		'stack' : TestStackComponent,
-	})
+	}
 
-	const inputView = {
+	const view = {
 		'type': 'stack',
 		'slot:children': [
 			{
@@ -162,14 +160,12 @@ test('Blox component with single slot is rendered', async () => {
 	
 	// When
 
-	const view = getBloxView(inputView, undefined, undefined)
-
 	const wrapper = mount(BloxComponent, {
 		props: {
 			catalog: catalog,
 			view: view,
-			bindings: undefined,
-			valuePlugins: undefined,
+			variables: undefined,
+			plugins: undefined,
 		},
 	})
 
@@ -185,12 +181,12 @@ test('Blox component with single slot with slot name missing is rendered using d
 
 	// Given
 
-	const catalog = getBloxCatalog({
+	const catalog = {
 		'label' : TestLabelComponent,
 		'stack' : TestStackNoNameComponent,
-	})
+	}
 
-	const inputView = {
+	const view = {
 		'type': 'stack',
 		'slot:': [
 			{
@@ -202,14 +198,12 @@ test('Blox component with single slot with slot name missing is rendered using d
 	
 	// When
 
-	const view = getBloxView(inputView, undefined, undefined)
-
 	const wrapper = mount(BloxComponent, {
 		props: {
 			catalog: catalog,
 			view: view,
-			bindings: undefined,
-			valuePlugins: undefined,
+			variables: undefined,
+			plugins: undefined,
 		},
 	})
 
@@ -221,33 +215,32 @@ test('Blox component with single slot with slot name missing is rendered using d
 
 })
 
-test('Blox Component uses key plugins', async () => {
+test('Blox Component uses plugins', async () => {
 
 	// Given
 
-	const catalog = getBloxCatalog({
+	const catalog = {
 		'label' : TestLabelComponent
-	})
+	}
 
-	const inputView = {
+	const view = {
 		'type': 'label',
 		'text': 'Some [smiley] people [smiley] use [smiley] emojis [smiley] too [smiley] much.'
 	}
 
-	const plugin = new TestValuePlugin()
+	const plugin = new TestPluginSmileys()
 	
 	// When
-
-	const view = getBloxView(inputView, undefined, undefined)
 
 	const wrapper = mount(BloxComponent, {
 		props: {
 			catalog: catalog,
 			view: view,
-			bindings: undefined,
-			valuePlugins: [plugin],
+			variables: undefined,
+			plugins: [plugin],
 		},
 	})
+	await wrapper.vm.$nextTick()
 
 	// Then
 

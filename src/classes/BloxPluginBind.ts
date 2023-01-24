@@ -1,21 +1,18 @@
 
-import type { BloxKeyPluginInterface } from '../interfaces/BloxKeyPluginInterface'
-import type { BloxBindings } from './BloxBindings'
-import type { BloxView } from './BloxView'
+import type { BloxPluginInterface } from '../interfaces/BloxPluginInterface'
 import { BloxError } from './BloxError'
-import type { BloxConfig } from './BloxConfig'
 
 /**
  * A key plugin that searches for keys that start with 'bind:' and prepares the resulting prop to be 2-way bound to the matching
  * variable entry in the provided variables.
  */
-export class BloxKeyPluginBind implements BloxKeyPluginInterface {
+export class BloxPluginBind implements BloxPluginInterface {
 
-	handleKey(key: string, value: any, bindings: BloxBindings, getNestedBloxView: (inputView: any) => BloxView, config?: BloxConfig ): { props: Record<string, any> | undefined, slots: Record<string, BloxView[]> | undefined } | undefined {
+	run(key: string, value: any, variables: any, setProp: (key: string, value: any) => void, setSlot: (slotName: string, views: any[]) => void ): void {
 		
-		const bindSpecifier = config?.bindSpecifier ?? 'bind:'
+		const bindSpecifier = 'bind:'
 		if (!key.startsWith(bindSpecifier)) {
-			return undefined
+			return
 		}
 
 		// This is a bound prop. 
@@ -45,17 +42,22 @@ export class BloxKeyPluginBind implements BloxKeyPluginInterface {
 		}
 	
 		// 3. Construct getter / setter props for v-bind
-		const props: Record<string, any> = {}
-		props[propName] = bindings.entries[variableName]
-		props[`onUpdate:${propName}`] = (newValue: any) => {
-			const currentBoundValue = bindings.entries[variableName]
-			currentBoundValue.value = newValue
-		}
 
-		return {
-			props: props,
-			slots: undefined,
-		}
+		setProp(key, undefined)
+		setProp(propName, variables[variableName])
+		setProp(`onUpdate:${propName}`, (newValue: any) => {
+			variables[variableName] = newValue
+		})
+
+		// const typeErased: any = bindings.entries
+		// setProp(propName, typeErased.value ? typeErased.value[variableName] : typeErased[variableName])
+		// setProp(`onUpdate:${propName}`, (newValue: any) => {
+		// 	if (typeErased.value) {
+		// 		typeErased.value[variableName] = newValue
+		// 	} else {
+		// 		typeErased[variableName] = newValue
+		// 	}
+		// })
 		
 	}
 

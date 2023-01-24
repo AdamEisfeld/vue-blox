@@ -8,6 +8,7 @@ import LandingSectionDemoTryItOut from '../../src/landing/LandingSectionDemoTryI
 import LandingSectionDemoBindVariables from '../../src/landing/LandingSectionDemoBindVariables.vue'
 import LandingSectionDemoNestedSlots from '../../src/landing/LandingSectionDemoNestedSlots.vue'
 import LandingSectionDemoMustache from '../../src/landing/LandingSectionDemoMustache.vue'
+import LandingSectionDemoExpressions from '../../src/landing/LandingSectionDemoExpressions.vue'
 
 import DemoLabelComponent from '../../src/demo/DemoLabelComponent.vue'
 import DemoInputTextboxComponent from '../../src/demo/DemoInputTextboxComponent.vue'
@@ -17,8 +18,6 @@ import DemoProfileImageComponent from '../../src/demo/DemoProfileImageComponent.
 import DemoHeadingComponent from '../../src/demo/DemoHeadingComponent.vue'
 import DemoCellComponent from '../../src/demo/DemoCellComponent.vue'
 import DemoImageComponent from '../../src/demo/DemoImageComponent.vue'
-
-import { getBloxCatalog } from '../../../node_modules/vue-blox'
 
 export default defineComponent({
 	name: 'LandingPage',
@@ -30,13 +29,14 @@ export default defineComponent({
 		LandingSectionDemoBindVariables,
 		LandingSectionDemoNestedSlots,
 		LandingSectionDemoMustache,
+		LandingSectionDemoExpressions,
 	},
 	props: undefined,
 	setup() {
 
 		const refBelowFold: Ref<ComponentPublicInstance<any> | undefined> = ref(undefined)
 
-		const catalog = getBloxCatalog({
+		const catalog = {
 			'label': DemoLabelComponent,
 			'textbox': DemoInputTextboxComponent,
 			'stepper': DemoStepperComponent,
@@ -45,7 +45,7 @@ export default defineComponent({
 			'heading': DemoHeadingComponent,
 			'cell': DemoCellComponent,
 			'image': DemoImageComponent,
-		})
+		}
 
 		return {
 			refBelowFold,
@@ -63,6 +63,7 @@ export default defineComponent({
 		<LandingSectionDemoBindVariables :catalog="catalog"/>
 		<LandingSectionDemoNestedSlots :catalog="catalog"/>
 		<LandingSectionDemoMustache :catalog="catalog"/>
+		<LandingSectionDemoExpressions :catalog="catalog"/>
 		<FooterBar/>
 	</main>
 </template>

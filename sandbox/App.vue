@@ -1,10 +1,8 @@
 <script lang="ts">
 
-import { defineComponent, watch } from 'vue'
-import { getBloxBindings } from '../src/composables/getBloxBindings'
-import { getBloxView } from '../src/composables/getBloxView'
+import { defineComponent, watch, reactive } from 'vue'
 import BloxComponent from '../src/components/BloxComponent.vue'
-import { BloxError, type BloxBindings, type BloxView } from '../src'
+import { BloxError, type BloxPluginInterface } from '../src'
 
 export default defineComponent({
 	name: 'App',
@@ -16,50 +14,36 @@ export default defineComponent({
 
 		// 1. Construct variables
 		
-		const inputVariables: any = {
+		const variables: any = reactive({
 			bar: 'Adam',
 			foo: 'Tom',
 			baz: 'Joey',
 			score: 0,
-		}
+		})
 
 		// 2. Construct view
 
-		const inputView: any = {
+		const view: any = {
 			type: 'stack',
-			'test:children': [
+			'slot:children': [
 				{
 					type: 'button',
-					'binder:message': 'foo',
-					'binder:count': 'score',
+					'bind:message': 'foo',
+					'bind:count': 'score',
 				},
 				{
 					type: 'button',
-					'message': '{{ bar }} and {{ baz }}',
-					'binder:count': 'score',
+					'message': '[smiley] Hello',
+					'bind:count': 'score',
 				}
 			]
 		}
 
-		let bindings: BloxBindings | undefined = undefined
-		let view: BloxView | undefined = undefined
-
-		try {
-			bindings = getBloxBindings(inputVariables)
-			view = getBloxView(inputView, bindings, undefined, {
-				componentSpecifier: 'type',
-				slotSpecifier: 'test:',
-				bindSpecifier: 'binder:'
-			})
-		} catch(error) {
-			console.log(error)
-		}
-
-		if (bindings) {
-			watch(Object.values(bindings.entries), () => {
-				console.log('Changes have been made!')
-			})
-		}
+		watch(variables, () => {
+			console.log('Changes have been made!')
+		}, {
+			deep: true
+		})
 
 		const onError = (error: any) => {
 			const bloxError = BloxError.asBloxError(error)
@@ -70,10 +54,30 @@ export default defineComponent({
 			}
 		}
 
+		class TestPluginSmileys implements BloxPluginInterface {
+
+			run(key: string, value: any, variables: any, setProp: (key: string, value: any) => void, setSlot: (slotName: string, views: any[]) => void ): void {
+
+				if (typeof value !== 'string') {
+					return undefined
+				}
+				setProp(key, (value as string).replace(/\[smiley\]/g, '😊'))
+
+			}
+
+		}
+
+		const plugins = [
+			new TestPluginSmileys()
+		]
+
+		variables.score = 4
+
 		return {
-			bindings,
+			variables,
 			view,
 			onError,
+			plugins,
 		}
 	},
 })
@@ -81,6 +85,6 @@ export default defineComponent({
 
 <template>
 	<main>
-		<BloxComponent :view="view" :bindings="bindings" @on:error="onError"/>
+		<BloxComponent :view="view" :variables="variables" @on:error="onError" :plugins="plugins"/>
 	</main>
 </template>

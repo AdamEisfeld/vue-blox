@@ -26,7 +26,10 @@ export default defineConfig({
 		rollupOptions: {
 			// Vue is provided by the parent project, don't compile Vue source-code inside our library.
 			external: ['vue', 'website'],
-			output: { globals: { vue: 'Vue' } },
+			output: {
+				exports: "named",
+				globals: { vue: 'Vue' }
+			},
 		},
 	},
 })

@@ -3,7 +3,7 @@ import { ComponentPublicInstance, defineComponent } from 'vue'
 import LandingSectionDemo from '../landing/LandingSectionDemo.vue'
 
 export default defineComponent({
-	name: 'LandingSectionDemoMustache',
+	name: 'LandingSectionDemoExpressions',
 	components: {
 		LandingSectionDemo,
 	},
@@ -16,33 +16,27 @@ export default defineComponent({
 	setup() {
 
 		const startingVariables: Record<string, any> = {
-			'name': 'Bruce Banner',
-			'job': 'Avenger',
-			age: 42,
+			'x': 5,
+			'y': 2,
+			'threshold': 9,
 			quotes: [
-				'Hulk, smash!',
-				'You wouldn\'t want me to get angry.'
+				'Yes, it is less.',
+				'No, it is not.'
 			],
-			'summary': '{{ name }} is {{ age }} years old, and works as an {{ job }}.',
 		}
 
 		const startingModels: Record<string, any>[] = [
 			{
-				type: 'heading',
-				'text': '{{ name }}\'s dating profile:'
-			},
-			{
-				type: 'profile',
-				url: './assets/demo/hulk.jpg',
-				name: '{{ name }}'
+				type: 'stepper',
+				'bind:value': 'threshold',
 			},
 			{
 				type: 'label',
-				'text': '<b>{{ name }}\'s Summary:</b><br>{{ summary }}'
+				'text': 'Is {{ x }} * {{ y }} less than {{ threshold }} ?'
 			},
 			{
 				type: 'label',
-				'text': '<b>Favourite Quotes:</b><br><ol class="list-disc list-inside">{{#quotes}}<li>{{.}}</li>{{/quotes}}</ol>'
+				'compute:text': 'x * y < threshold ? quotes[0] : quotes[1]'
 			},
 		]
 
@@ -54,9 +48,10 @@ export default defineComponent({
 				}
 			},
 			{
-				name: 'Profile Pic',
+				name: 'Stepper',
 				model: {
-					type: 'profile'
+					type: 'stepper',
+					value: 0,
 				}
 			},
 			{
@@ -78,14 +73,14 @@ export default defineComponent({
 </script>
 
 <template>
-	<LandingSectionDemo class="bg-gray-50"
+	<LandingSectionDemo class="bg-brand"
 		:catalog="catalog"
-		:isInverted="false"
+		:isInverted="true"
 		:isVariablesEnabled="true"
 		:startingVariables="startingVariables"
 		:startingModels="startingModels"
 		:selectableComponents="selectableComponents"
-		title="Mustache Support"
-		caption="For string-typed props and variables, insert mustache tags to reference values from other variables."
+		title="Runtime Expressions"
+		caption="Evaluate expressions and call functions you expose directly from your view definitions."
 	/>
 </template>

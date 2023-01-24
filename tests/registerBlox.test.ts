@@ -1,6 +1,6 @@
 import { test, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
-import { registerBlox, getBloxView, BloxComponent } from '../src'
+import { registerBlox, BloxComponent } from '../src'
 import TestLabelComponent from './TestLabelComponent.vue'
 
 test('Plugin installation', async () => {
@@ -15,16 +15,14 @@ test('Plugin installation', async () => {
 
 	// When
 
-	const inputModel = {
+	const inputView = {
 		'type': 'label',
 		'text': 'Hello, world!'
 	}
 
-	const view = getBloxView(inputModel, undefined)
-
 	const wrapper = mount(BloxComponent, {
 		props: {
-			view: view,
+			view: inputView,
 		},
 		global: {
 			plugins: [blox]

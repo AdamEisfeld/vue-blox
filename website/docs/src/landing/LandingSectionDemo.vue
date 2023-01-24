@@ -1,6 +1,9 @@
 <script lang="ts">
-import { defineComponent, Ref, ref, watch, ShallowRef, shallowRef, computed } from 'vue'
-import { getBloxBindings, getBloxView, BloxView, BloxBindings, BloxComponent, BloxCatalog } from '../../../node_modules/vue-blox'
+import { defineComponent, Ref, ref, watch, computed, ComponentPublicInstance } from 'vue'
+import { BloxComponent } from '../../../node_modules/vue-blox'
+import { getPluginMustache } from 'vue-blox-mustache'
+import { getPluginCompute, getPluginEmit } from 'vue-blox-expressions'
+import { Parser } from 'expr-eval'
 import LayoutSection from '../layouts/LayoutSection.vue'
 import Button from '../components/Button.vue'
 import InputTextview from '../components/InputTextview.vue'
@@ -51,7 +54,7 @@ export default defineComponent({
 			required: true,
 		},
 		catalog: {
-			type: Object as () => BloxCatalog,
+			type: Object as () => Record<string, ComponentPublicInstance<any>>,
 			required: true,
 		}
 	},
@@ -60,7 +63,6 @@ export default defineComponent({
 
 		const inputBindings: Ref<any> = ref(props.startingVariables)
 		const inputBindingsJson: Ref<string | undefined> = ref(inputBindings.value ? JSON.stringify(inputBindings.value, null, '\t') : undefined)
-		const bindings: ShallowRef<BloxBindings> = shallowRef(new BloxBindings())
 
 		watch(inputBindingsJson, () => {
 			rebuildLivePreview()
@@ -68,8 +70,7 @@ export default defineComponent({
 
 		const inputViews: Ref<any[]> = ref(props.startingModels ?? [])
 		const inputViewsJson: Ref<string | undefined> = ref(inputViews.value && inputViews.value.length > 0 ? JSON.stringify(inputViews.value, null, '\t') : undefined)
-		const views: Ref<BloxView[] | undefined> = ref(undefined)
-
+		
 		const startingVariableJson = inputBindingsJson.value
 		const startingViewsJson = inputViewsJson.value
 
@@ -77,7 +78,7 @@ export default defineComponent({
 			rebuildLivePreview()
 		})
 
-		watch(bindings, () => {
+		watch(inputBindings, () => {
 			rebuildJSON()
 		}, {
 			deep: true
@@ -102,26 +103,26 @@ export default defineComponent({
 				// ignore
 			}
 
-			bindings.value = getBloxBindings(inputBindings.value)
-			const updatedViews: BloxView[] = []
-			for (let i = 0; i < inputViews.value.length; i += 1) {
-				const inputView = inputViews.value[i]
-				const view = getBloxView(inputView, bindings.value)
-				updatedViews.push(view)
-			}
-			views.value = updatedViews
+			// bindings.value = getBloxBindings(inputBindings.value)
+			// const updatedViews: BloxView[] = []
+			// for (let i = 0; i < inputViews.value.length; i += 1) {
+			// 	const inputView = inputViews.value[i]
+			// 	const view = getBloxView(inputView, bindings.value)
+			// 	updatedViews.push(view)
+			// }
+			// views.value = updatedViews
 		}
 
 		const rebuildJSON = () => {
 		
-			const flattenedVariables: Record<string, any> = {}
-			Object.assign(flattenedVariables, inputBindings.value)
-			for (let v = 0; v < Object.keys(bindings.value.entries).length; v += 1) {
-				const key = Object.keys(bindings.value.entries)[v]
-				const value = bindings.value.entries[key].value
-				flattenedVariables[key] = value
-			}
-			inputBindingsJson.value = Object.keys(flattenedVariables).length > 0 ? JSON.stringify(flattenedVariables, null, '\t') : undefined
+			// const flattenedVariables: Record<string, any> = {}
+			// Object.assign(flattenedVariables, inputBindings.value)
+			// for (let v = 0; v < Object.keys(bindings.value.entries).length; v += 1) {
+			// 	const key = Object.keys(bindings.value.entries)[v]
+			// 	const value = bindings.value.entries[key].value
+			// 	flattenedVariables[key] = value
+			// }
+			inputBindingsJson.value = Object.keys(inputBindings.value).length > 0 ? JSON.stringify(inputBindings.value, null, '\t') : undefined
 
 		}
 
@@ -193,11 +194,21 @@ export default defineComponent({
 			inputViewsJson.value = props.startingModels ? JSON.stringify(props.startingModels, null, '\t') : undefined
 		}
 	
+		const plugins = [
+			getPluginMustache(),
+			getPluginCompute({
+				parser: new Parser()
+			}),
+			getPluginEmit({
+				parser: new Parser()
+			})
+		]
+
 		rebuildLivePreview()
 
 		return {
-			views,
-			bindings,
+			inputViews,
+			inputBindings,
 			inputBindingsJson,
 			inputViewsJson,
 			addComponent,
@@ -210,6 +221,7 @@ export default defineComponent({
 			onResetVariables,
 			hasChangedModel,
 			hasChangedVariables,
+			plugins,
 		}
 		return {}
 	},
@@ -287,8 +299,8 @@ export default defineComponent({
 
 					<!-- Body -->
 					<div class="flex flex-col gap-4 p-8 h-min overflow-scroll select-none min-h-64 max-h-96">
-						<template v-for="view in views">
-							<BloxComponent :view="view" :bindings="bindings" :catalog="catalog" class="w-full h-auto"/> 
+						<template v-for="view in inputViews">
+							<BloxComponent :view="view" :variables="inputBindings" :catalog="catalog" class="w-full h-auto" :plugins="plugins"/> 
 						</template>
 					</div>
 
