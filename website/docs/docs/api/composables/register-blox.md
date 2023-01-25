@@ -2,7 +2,7 @@
 
 ## Description
 
-Returns a Vue plugin to be passed to a Vue app via app.use(...). Registers one or more Vue components to a BloxCatalog globally. Registers the BloxComponent itself globally. All BloxComponents have access to this global BloxCatalog.
+Returns a Vue plugin to be passed to a Vue app via app.use(...). Registers one or more Vue components to a catalog globally. Registers the BloxComponent itself globally. All BloxComponents have access to this global catalog.
 
 ## Parameters
 
@@ -10,13 +10,9 @@ Returns a Vue plugin to be passed to a Vue app via app.use(...). Registers one o
 
 A map of strings to Vue components to use in the global catalog. The keys represent the "type" fields in objects passed to getBloxView(...).
 
-- **keyPlugins?:** [BloxKeyPluginInterface[]](/docs/api/interfaces/blox-key-plugin-interface)
+- **plugins?:** [BloxPluginInterface[]](/docs/api/interfaces/blox-plugin-interface)
 
-An optional array of key plugins to register globally.
-
-- **keyPlugins?:** [BloxValuePluginInterface[]](/docs/api/interfaces/blox-value-plugin-interface)
-
-An optional array of value plugins to register globally.
+An optional array of plugins to register globally.
 
 ## Returns
 

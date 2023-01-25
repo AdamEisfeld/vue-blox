@@ -66,53 +66,64 @@ export default defineComponent({
 
 		const getView = computed((): { isSet: boolean, type: string | undefined, props: Record<string, any> | undefined, slots: Record<string, any[]> | undefined } => {
 
-			const { view, variables } = props
+			try {
+
+				const { view, variables } = props
 			
-			if (!view) {
+				if (!view) {
+					return {
+						isSet: false,
+						type: undefined,
+						props: undefined,
+						slots: undefined
+					}
+				}
+
+				const { type } = view
+				const plugins = getPlugins.value
+
+				const viewKeys = Object.keys(view)
+
+				const computedProps: Record<string, any> = {}
+				Object.assign(computedProps, view)
+				const computedSlots: Record<string, any[]> = {}
+
+				const setProp = (propName: string, value: any) => {
+					if (value) {
+						computedProps[propName] = value
+					} else {
+						delete computedProps[propName]
+					}
+				}
+
+				const setSlot = (slotName: string, views: any[]) => {
+					computedSlots[slotName] = views
+				}
+
+				for (let k = 0; k < viewKeys.length; k += 1) {
+					const key = viewKeys[k]
+					let value = view[key]
+
+					for (let p = 0; p < plugins.length; p += 1) {
+						const plugin = plugins[p]
+						plugin.run(key, value, variables, setProp, setSlot)
+					}
+				}
+
+				return {
+					isSet: true,
+					type: type,
+					props: computedProps,
+					slots: computedSlots,
+				}
+			} catch(error) {
+				emit('on:error', error)
 				return {
 					isSet: false,
 					type: undefined,
-					props: undefined,
-					slots: undefined
+					props: {},
+					slots: {},
 				}
-			}
-
-			const { type } = view
-			const plugins = getPlugins.value
-
-			const viewKeys = Object.keys(view)
-
-			const computedProps: Record<string, any> = {}
-			Object.assign(computedProps, view)
-			const computedSlots: Record<string, any[]> = {}
-
-			const setProp = (propName: string, value: any) => {
-				if (value) {
-					computedProps[propName] = value
-				} else {
-					delete computedProps[propName]
-				}
-			}
-
-			const setSlot = (slotName: string, views: any[]) => {
-				computedSlots[slotName] = views
-			}
-
-			for (let k = 0; k < viewKeys.length; k += 1) {
-				const key = viewKeys[k]
-				let value = view[key]
-
-				for (let p = 0; p < plugins.length; p += 1) {
-					const plugin = plugins[p]
-					plugin.run(key, value, variables, setProp, setSlot)
-				}
-			}
-
-			return {
-				isSet: true,
-				type: type,
-				props: computedProps,
-				slots: computedSlots,
 			}
 
 		})

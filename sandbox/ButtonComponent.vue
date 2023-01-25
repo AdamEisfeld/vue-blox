@@ -19,11 +19,13 @@ export default defineComponent({
 	emits: [
 		'update:message',
 		'update:count',
+		'user:clickedMe'
 	],
 	setup(props, { emit }) {
 
 		const clicked = () => {
 			emit('update:count', props.count + 1)
+			emit('user:clickedMe')
 		}
 
 		return {

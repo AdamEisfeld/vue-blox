@@ -17,11 +17,13 @@ import App from './App.vue'
 
 const app = createApp(App)
 
+
+
 const blox = registerBlox({
 	catalog: {
 		'stack': StackComponent,
 		'button': ButtonComponent
-	}
+	},
 })
 
 app.use(blox)

@@ -36,12 +36,18 @@ module.exports = {
 				text: 'Advanced',
 				items: [
 					{ text: 'Binding Props', link: '/docs/advanced/binding-props' },
-					{ text: 'Providing Slots', link: '/docs/advanced/providing-slots' },
-					{ text: 'Using Mustache', link: '/docs/advanced/using-mustache' },
 					{ text: 'Watching Bindings', link: '/docs/advanced/watching-bindings' },
+					{ text: 'Providing Slots', link: '/docs/advanced/providing-slots' },
 					{ text: 'Component-Level Catalogs', link: '/docs/advanced/component-level-catalogs' },
-					{ text: 'Plugins', link: '/docs/advanced/plugins' },
 					{ text: 'Error Handling', link: '/docs/advanced/error-handling' },
+				]
+			},
+			{
+				text: 'Plugins',
+				items: [
+					{ text: 'Overview', link: '/docs/plugins/plugins' },
+					{ text: 'Mustache', link: '/docs/plugins/plugin-mustache' },
+					{ text: 'Expressions', link: '/docs/plugins/plugin-expressions' },
 				]
 			},
 			{
@@ -50,9 +56,6 @@ module.exports = {
 					{
 						text: 'Classes',
 						items: [
-							{ text: 'BloxCatalog', link: '/docs/api/classes/blox-catalog' },
-							{ text: 'BloxBindings', link: '/docs/api/classes/blox-bindings' },
-							{ text: 'BloxView', link: '/docs/api/classes/blox-view' },
 							{ text: 'BloxError', link: '/docs/api/classes/blox-error' },
 						]
 					},
@@ -66,16 +69,12 @@ module.exports = {
 						text: 'Composables',
 						items: [
 							{ text: 'registerBlox', link: '/docs/api/composables/register-blox' },
-							{ text: 'getBloxCatalog', link: '/docs/api/composables/get-blox-catalog' },
-							{ text: 'getBloxBindings', link: '/docs/api/composables/get-blox-bindings' },
-							{ text: 'getBloxView', link: '/docs/api/composables/get-blox-view' },
 						]
 					},
 					{
 						text: 'Interfaces',
 						items: [
-							{ text: 'BloxKeyPluginInterface', link: '/docs/api/interfaces/blox-key-plugin-interface' },
-							{ text: 'BloxValuePluginInterface', link: '/docs/api/interfaces/blox-value-plugin-interface' },
+							{ text: 'BloxPluginInterface', link: '/docs/api/interfaces/blox-plugin-interface' },
 						]
 					}
 				]

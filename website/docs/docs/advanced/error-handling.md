@@ -33,8 +33,8 @@ For any errors thrown from within a [BloxComponent](/docs/api/components/blox-co
 <BloxComponent
 	:catalog="catalog"
 	:view="view"
-	:bindings="bindings"
-	:valuePlugins="valuePlugins"
+	:variables="variables"
+	:plugins="plugins"
 	@on:error="(error: any) => handleError(error)"
 />
 ```

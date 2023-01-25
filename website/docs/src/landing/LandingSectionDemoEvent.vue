@@ -1,9 +1,9 @@
 <script lang="ts">
 import { ComponentPublicInstance, defineComponent } from 'vue'
-import LandingSectionDemo from '../landing/LandingSectionDemo.vue'
+import LandingSectionDemo from './LandingSectionDemo.vue'
 
 export default defineComponent({
-	name: 'LandingSectionDemoExpressions',
+	name: 'LandingSectionDemoEvent',
 	components: {
 		LandingSectionDemo,
 	},
@@ -16,42 +16,38 @@ export default defineComponent({
 	setup() {
 
 		const startingVariables: Record<string, any> = {
-			'x': 5,
-			'y': 2,
-			'threshold': 9,
-			quotes: [
-				'Yes, it is less.',
-				'No, it is not.'
-			],
+			'isMessageHidden': true,
 		}
 
 		const startingModels: Record<string, any>[] = [
 			{
-				type: 'stepper',
-				'bind:value': 'threshold',
+				type: 'label',
+				'text': 'Click the button below to reveal a message and log a statement.'
+			},
+			{
+				type: 'button',
+				'event:didClick': 'setVariable("isMessageHidden", false); console("The user clicked the button!")',
 			},
 			{
 				type: 'label',
-				'text': 'Is {{ x }} * {{ y }} less than {{ threshold }} ?'
-			},
-			{
-				type: 'label',
-				'compute:text': 'x * y < threshold ? quotes[0] : quotes[1]'
+				'compute:isHidden': 'isMessageHidden',
+				'text': 'Simple but powerful!'
 			},
 		]
 
 		const selectableComponents: { name: string, model: any }[] = [
 			{
-				name: 'Heading',
-				model: {
-					type: 'heading'
-				}
-			},
-			{
 				name: 'Stepper',
 				model: {
 					type: 'stepper',
 					value: 0,
+				}
+			},
+			{
+				name: 'Button',
+				model: {
+					type: 'button',
+					title: 'Click Me',
 				}
 			},
 			{
@@ -73,14 +69,14 @@ export default defineComponent({
 </script>
 
 <template>
-	<LandingSectionDemo class="bg-brand"
+	<LandingSectionDemo class="bg-gray-50"
 		:catalog="catalog"
-		:isInverted="true"
+		:isInverted="false"
 		:isVariablesEnabled="true"
 		:startingVariables="startingVariables"
 		:startingModels="startingModels"
 		:selectableComponents="selectableComponents"
-		title="Runtime Expressions"
-		caption="Evaluate expressions and call functions you expose directly from your view definitions."
+		title="Event Listeners"
+		caption="Listen for emitted events and invoke functions."
 	/>
 </template>

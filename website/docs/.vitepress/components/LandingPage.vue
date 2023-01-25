@@ -8,7 +8,8 @@ import LandingSectionDemoTryItOut from '../../src/landing/LandingSectionDemoTryI
 import LandingSectionDemoBindVariables from '../../src/landing/LandingSectionDemoBindVariables.vue'
 import LandingSectionDemoNestedSlots from '../../src/landing/LandingSectionDemoNestedSlots.vue'
 import LandingSectionDemoMustache from '../../src/landing/LandingSectionDemoMustache.vue'
-import LandingSectionDemoExpressions from '../../src/landing/LandingSectionDemoExpressions.vue'
+import LandingSectionDemoCompute from '../../src/landing/LandingSectionDemoCompute.vue'
+import LandingSectionDemoEvent from '../../src/landing/LandingSectionDemoEvent.vue'
 
 import DemoLabelComponent from '../../src/demo/DemoLabelComponent.vue'
 import DemoInputTextboxComponent from '../../src/demo/DemoInputTextboxComponent.vue'
@@ -18,6 +19,8 @@ import DemoProfileImageComponent from '../../src/demo/DemoProfileImageComponent.
 import DemoHeadingComponent from '../../src/demo/DemoHeadingComponent.vue'
 import DemoCellComponent from '../../src/demo/DemoCellComponent.vue'
 import DemoImageComponent from '../../src/demo/DemoImageComponent.vue'
+import DemoButtonComponent from '../../src/demo/DemoButtonComponent.vue'
+import { BloxError } from 'vue-blox'
 
 export default defineComponent({
 	name: 'LandingPage',
@@ -29,10 +32,20 @@ export default defineComponent({
 		LandingSectionDemoBindVariables,
 		LandingSectionDemoNestedSlots,
 		LandingSectionDemoMustache,
-		LandingSectionDemoExpressions,
+		LandingSectionDemoCompute,
+		LandingSectionDemoEvent,
 	},
 	props: undefined,
 	setup() {
+
+		window.onerror = function(message, source, lineno, colno, error) {
+			const bloxError = BloxError.asBloxError(error)
+			if (bloxError) {
+				console.log(`Blox Error: ${bloxError.debugMessage}`)
+			} else {
+				console.log(message, source, lineno, colno, error)
+			}
+		}
 
 		const refBelowFold: Ref<ComponentPublicInstance<any> | undefined> = ref(undefined)
 
@@ -45,6 +58,7 @@ export default defineComponent({
 			'heading': DemoHeadingComponent,
 			'cell': DemoCellComponent,
 			'image': DemoImageComponent,
+			'button': DemoButtonComponent,
 		}
 
 		return {
@@ -63,7 +77,8 @@ export default defineComponent({
 		<LandingSectionDemoBindVariables :catalog="catalog"/>
 		<LandingSectionDemoNestedSlots :catalog="catalog"/>
 		<LandingSectionDemoMustache :catalog="catalog"/>
-		<LandingSectionDemoExpressions :catalog="catalog"/>
+		<LandingSectionDemoCompute :catalog="catalog"/>
+		<LandingSectionDemoEvent :catalog="catalog"/>
 		<FooterBar/>
 	</main>
 </template>

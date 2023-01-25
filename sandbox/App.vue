@@ -3,6 +3,8 @@
 import { defineComponent, watch, reactive } from 'vue'
 import BloxComponent from '../src/components/BloxComponent.vue'
 import { BloxError, type BloxPluginInterface } from '../src'
+import { getPluginEvent } from 'vue-blox-expressions'
+import { Parser } from 'expr-eval'
 
 export default defineComponent({
 	name: 'App',
@@ -30,6 +32,8 @@ export default defineComponent({
 					type: 'button',
 					'bind:message': 'foo',
 					'bind:count': 'score',
+					'event:user:clickedMe': 'alert("Hello")',
+					'event:onClick': 'alert("Clicked")'
 				},
 				{
 					type: 'button',
@@ -46,6 +50,7 @@ export default defineComponent({
 		})
 
 		const onError = (error: any) => {
+			console.log('Error detected')
 			const bloxError = BloxError.asBloxError(error)
 			if (bloxError) {
 				console.log(bloxError.debugMessage)
@@ -67,8 +72,16 @@ export default defineComponent({
 
 		}
 
+		const parser = new Parser()
+		parser.functions.alert = (message: string) => {
+			window.alert(message)
+		}
+
 		const plugins = [
-			new TestPluginSmileys()
+			new TestPluginSmileys(),
+			getPluginEvent({
+				parser: parser
+			})
 		]
 
 		variables.score = 4
@@ -85,6 +98,6 @@ export default defineComponent({
 
 <template>
 	<main>
-		<BloxComponent :view="view" :variables="variables" @on:error="onError" :plugins="plugins"/>
+		<BloxComponent :view="view" :variables="variables" @on:error="error => onError(error)" :plugins="plugins"/>
 	</main>
 </template>

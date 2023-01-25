@@ -1,31 +1,26 @@
 import {
   B
-} from "./chunk-EXI6NJD3.js";
+} from "./chunk-ZYMVSQD5.js";
 import {
   toRaw
 } from "./chunk-3T6VSYDD.js";
 import "./chunk-TWLJ45QX.js";
 
 // node_modules/vue-blox-expressions/dist/vue-blox-expressions.es.js
-var v = Object.defineProperty;
-var b = (r, t, e) => t in r ? v(r, t, { enumerable: true, configurable: true, writable: true, value: e }) : r[t] = e;
-var g = (r, t, e) => (b(r, typeof t != "symbol" ? t + "" : t, e), e);
-var _ = class {
+var d = Object.defineProperty;
+var v = (r, t, e) => t in r ? d(r, t, { enumerable: true, configurable: true, writable: true, value: e }) : r[t] = e;
+var u = (r, t, e) => (v(r, typeof t != "symbol" ? t + "" : t, e), e);
+var b = class {
   constructor(t) {
-    g(this, "parser");
-    t.functions.internal_invokeFunctions = (...e) => () => {
-      for (let o = 0; o < e.length; o += 1) {
-        const s = e[o];
-        s();
-      }
-    }, this.parser = t;
+    u(this, "parser");
+    this.parser = t;
   }
-  run(t, e, o, s, d) {
-    const l = "compute:";
-    if (!t.startsWith(l))
+  run(t, e, p, l, f) {
+    const a = "compute:";
+    if (!t.startsWith(a))
       return;
-    const c = t.substring(l.length, t.length);
-    if (c.length === 0)
+    const s = t.substring(a.length, t.length);
+    if (s.length === 0)
       throw new B(
         "Compute parsing failed.",
         "The value for the prop name for compute must be a string with length > 0.",
@@ -34,46 +29,41 @@ var _ = class {
           value: e
         }
       );
-    const u = e;
-    if (/^__proto__|prototype|constructor$/.test(u))
+    const i = e;
+    if (/^__proto__|prototype|constructor$/.test(i))
       throw new B(
         "Expression parsing failed.",
         `The call to parser.evaluate() for value ${e} was aborted because prototype access was detected.`,
         void 0
       );
-    const p = {};
-    Object.assign(p, toRaw(o));
+    const c = {};
+    Object.assign(c, toRaw(p));
     try {
-      const n = this.parser.evaluate(u, p);
-      s(c, n);
-    } catch (n) {
+      const o = this.parser.evaluate(i, c);
+      l(s, o);
+    } catch (o) {
       throw new B(
         "Expression parsing failed.",
-        `The call to parser.evaluate() for value ${e} threw the error: ${n}`,
+        `The call to parser.evaluate() for value ${e} threw the error: ${o}`,
         void 0
       );
     }
   }
 };
 function S({ parser: r }) {
-  return new _(r);
+  return new b(r);
 }
 var x = class {
   constructor(t) {
-    g(this, "parser");
-    t.functions.internal_invokeFunctions = (...e) => () => {
-      for (let o = 0; o < e.length; o += 1) {
-        const s = e[o];
-        s();
-      }
-    }, this.parser = t;
+    u(this, "parser");
+    this.parser = t;
   }
-  run(t, e, o, s, d) {
-    const l = "on:";
-    if (!t.startsWith(l))
+  run(t, e, p, l, f) {
+    const a = "event:";
+    if (!t.startsWith(a))
       return;
-    const c = t.substring(l.length, t.length);
-    if (c.length === 0)
+    const s = t.substring(a.length, t.length);
+    if (s.length === 0)
       throw new B(
         "Emit parsing failed.",
         "The value for the prop name for emit must be a string with length > 0.",
@@ -82,27 +72,24 @@ var x = class {
           value: e
         }
       );
-    const u = (f) => {
-      let a = f.split(/[^a-zA-Z0-9]/), w = a[0].toLowerCase();
-      for (let h = 1; h < a.length; h++)
-        w += a[h].charAt(0).toUpperCase() + a[h].slice(1).toLowerCase();
-      return w;
-    }, p = e;
-    if (/^__proto__|prototype|constructor$/.test(p))
+    const i = e;
+    if (/^__proto__|prototype|constructor$/.test(i))
       throw new B(
         "Expression parsing failed.",
         `The call to parser.evaluate() for value ${e} was aborted because prototype access was detected.`,
         void 0
       );
-    const n = {};
-    Object.assign(n, toRaw(o)), s(u(`on_${c}`), (...f) => {
-      Object.assign(n, f);
+    const c = `on${s.charAt(0).toUpperCase()}${s.slice(1)}`, o = {};
+    Object.assign(o, toRaw(p)), l(c, (...w) => {
+      Object.assign(o, w);
       try {
-        this.parser.evaluate(p, n);
-      } catch (a) {
+        this.parser.functions.setVariable = (h, m) => {
+          p[h] = m;
+        }, this.parser.evaluate(i, o);
+      } catch (h) {
         throw new B(
           "Expression parsing failed.",
-          `The call to parser.evaluate() for value ${e} threw the error: ${a}`,
+          `The call to parser.evaluate() for value ${e} threw the error: ${h}`,
           void 0
         );
       }
@@ -113,9 +100,9 @@ function T({ parser: r }) {
   return new x(r);
 }
 export {
-  _ as BloxPluginCompute,
-  x as BloxPluginEmit,
+  b as BloxPluginCompute,
+  x as BloxPluginEvent,
   S as getPluginCompute,
-  T as getPluginEmit
+  T as getPluginEvent
 };
 //# sourceMappingURL=vue-blox-expressions.js.map

@@ -4,21 +4,21 @@ A dynamic Vue component that renders an external Vue component based on the 'typ
 
 ## Props
 
-- **catalog:** [BloxCatalog](/docs/api/classes/blox-catalog)
+- **catalog:** ```Record<string, ComponentPublicInstance<any>>```
 
 The catalog to use when determining which component to inject. If no catalog is provided, the global catalog configured via registerBlox(...) will be used.
 
-- **view:** [BloxView](/docs/api/classes/blox-view)
+- **view:** ```any```
 
-The view data to inject into the Vue component.
+An object describing a view to render. The "type" field on the view will determine which component is rendered.
 
-- **bindings:** [BloxBindings](/docs/api/classes/blox-bindings)
+- **variables:** ```Record<string, any>```
 
-Any reactive variables that the view's props will be getting data from / sending data to.
+Any variables that the view's props will be getting data from / sending data to.
 
-- **valuePlugins:** [BloxValuePluginInterface[]](/docs/api/interfaces/blox-value-plugin-interface)
+- **plugins:** [BloxPluginInterface[]](/docs/api/interfaces/blox-plugin-interface)
 
-An optional array of value plugins to use on every prop value for the view before passing those prop values into the view's component. If no key plugins are specified, then the global key plugins configured via registerBlox(...) will be used, if any.
+An optional array of plugins to use on every prop value for the view before passing those prop values into the view's component. If no plugins are specified, then the global plugins configured via registerBlox(...) will be used, if any.
 
 ## Emits
 
@@ -44,23 +44,23 @@ An optional array of value plugins to use on every prop value for the view befor
 ```
 
 ```html
-// Pass the component reactive bindings:
+// Pass the component reactive variables:
 
 <BloxComponent
 	:catalog="catalog"
 	:view="view"
-	:bindings="bindings"
+	:variables="variables"
 />
 ```
 
 ```html
-// Pass the component value plugins:
+// Pass the component plugins:
 
 <BloxComponent
 	:catalog="catalog"
 	:view="view"
-	:bindings="bindings"
-	:valuePlugins="valuePlugins"
+	:variables="variables"
+	:plugins="plugins"
 />
 ```
 
@@ -70,8 +70,8 @@ An optional array of value plugins to use on every prop value for the view befor
 <BloxComponent
 	:catalog="catalog"
 	:view="view"
-	:bindings="bindings"
-	:valuePlugins="valuePlugins"
+	:variables="variables"
+	:plugins="plugins"
 	@on:error="(error: any) => handleError(error)"
 />
 ```

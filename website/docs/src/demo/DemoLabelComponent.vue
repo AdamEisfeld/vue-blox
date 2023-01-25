@@ -9,6 +9,11 @@ export default defineComponent({
 			type: [String, Number, Boolean],
 			required: false,
 			default: undefined
+		},
+		isHidden: {
+			type: Boolean,
+			required: false,
+			default: false
 		}
 	},
 	emits: [],
@@ -20,5 +25,5 @@ export default defineComponent({
 </script>
 
 <template>
-	<span v-html="text"></span>
+	<span v-html="text" :class="isHidden ? 'hidden' : ''"></span>
 </template>

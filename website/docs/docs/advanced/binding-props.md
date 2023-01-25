@@ -5,9 +5,9 @@ Rendering objects to their corresponding components is fun, but not very interac
 - Store their inputs to be sent to an API call
 - Something else?
 
-The [getBloxView(...)](/docs/api/composables/get-blox-view) composable accepts a second parameter called "bindings", of type [BloxBindings](/docs/api/classes/blox-bindings). You instantiate bindings via the [getBloxBindings(...)](/docs/api/composables/get-blox-bindings) composable, passing in a regular JS object containing key/value pairs of the props you wish to monitor and the initial values to provide to those props. In return, you receive a [BloxBindings](/docs/api/classes/blox-bindings) instance that can be passed to [getBloxView(...)](/docs/api/composables/get-blox-view), which will ensure the props that mach those bindings are made 2-way reactive.
+The [BloxComponent](/docs/api/components/blox-component) component accepts a prop called "variables", which can be any set of key/value pairs you wish to provide to your components. It is recommended to make this variables object reactive via Vue's reactive() composable, which will ensure the props that are bound to these variables are made 2-way reactive (and will allow you to monitor these variables via Vue's watch() composable to receive callbacks as the user makes changes to them via your UI).
 
-Under the hood, this means an additional prop is added for each key in your input view who's name starts with **'bind:'**, with the prop name set to 'update:[propNameInCamelCase]'. If the your Vue component emits this event (as it would for normal v-model implementations), then Vue Blox will handle reacting to this event and updating the value in the bindings object.
+Under the hood, this means an additional prop is added for each key in your view who's name starts with **'bind:'**, with the prop name set to 'update:[prop-name]'. If the your Vue component emits this event (as it would for normal v-model implementations), then Vue Blox will handle reacting to this event and updating the value in the bindings object.
 
 For example, say we had this simple Vue component that:
 - Renders an input box
@@ -70,13 +70,13 @@ app.use(blox)
 app.mount('#app')
 ```
 
-You could then construct an "input bindings" object (any JS object) containing a "message" key/value pair, construct a BloxBindings object from this input, and pass this bindings object to [getBloxView(...)](/docs/api/composables/get-blox-view) along with an input view that has a **"bind:text"** key/value pair with a value of **"message"**:
+You could then construct a variables object (any JS object) containing a "message" key/value pair, and pass this object to [BloxComponent](/docs/api/components/blox-component)'s variables prop along with a view that has a **"bind:text"** key/value pair with a value of **"message"**:
 
-```ts{3,4,12-15,24,27-31,35}
+```ts{3,4,12-15,20,24-27,31,35}
 // App.vue
 <script lang="ts">
-import { defineComponent, watch } from 'vue'
-import { BloxComponent, getBloxBindings, getBloxView } from 'vue-blox'
+import { defineComponent, reactive, watch } from 'vue'
+import { BloxComponent } from 'vue-blox'
 
 export default defineComponent({
 	name: 'App',
@@ -85,29 +85,25 @@ export default defineComponent({
 	setup() {
 		
 		// Construct some variables to provide bound data to our props:
-		const inputBindings: any = {
+		const variables = reactive({
 			message: 'This is a bound prop' // Initial value for "text" prop
-		}
+		})
 
 		// Construct a JS object to render our input. We bind the 'text' prop to the value of 'someVariable' in our variables:
-		const inputView: any = {
+		const view = {
 			type: 'input',
 			'bind:text': 'message'
 		}
 
-		// Parse the input bindings into a BloxBindings instance, and pass it to the getBloxView(...) call:
-		const bindings = getBloxBindings(inputBindings)
-		const view = getBloxView(inputView, bindings)
-
 		// Now we can watch our bindings object to be notified as the user enters text into our input component:
-		watch(bindings.entries['message'], () => {
-			const currentValue = bindings.entries['message'].value
+		watch(variables, () => {
+			const currentValue = variables['message']
 			console.log(`Message Updated: ${currentValue}`)
 		})
 
 		return {
 			view,
-			bindings
+			variables
 		}
 	},
 })
@@ -117,8 +113,8 @@ export default defineComponent({
 <template>
 	<main>
 		<!-- A MyInputComponent will be rendered. As the user enters text,
-		binding.entries['message'] will be updated. -->
-		<BloxComponent :view="view" :bindings="bindings"/>
+		variables.message will be updated. -->
+		<BloxComponent :view="view" :variables="variables"/>
 	</main>
 </template>
 ```

@@ -1,6 +1,6 @@
 # Providing Slots
 
-You can optionally provide nested objects to be inserted into slots of your component by including a key/value pair where the key is in the format 'slot:[slotName]' and the value is either a single input view to be rendered or an array of input views to be rendered. If no slot name is provided, the 'default' slot will be used in the parent component.
+You can optionally provide nested objects to be inserted into slots of your component by including a key/value pair where the key is in the format 'slot:[slotName]' and the value is either a single view to be rendered or an array of views to be rendered. If no slot name is provided, the 'default' slot will be used in the parent component.
 
 For example, if you had a component named MyStackComponent, which used flex-box to stack components vertically in a slot named 'children':
 
@@ -40,7 +40,7 @@ export default defineComponent({
 
 And you mapped this component to the 'stack' type in Vue Blox:
 
-```ts
+```ts{12}
 import App  from  './App.vue'
 import { createApp } from  'vue'
 import { registerBlox } from  'vue-blox'
@@ -62,13 +62,13 @@ app.use(blox)
 app.mount('#app')
 ```
 
-Then you might insert nested input views into the 'children' slot like so:
+Then you might insert nested views into the 'children' slot like so:
 
 ```ts{20-29}
 // App.vue
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { BloxComponent, getBloxBindings, getBloxView } from 'vue-blox'
+import { defineComponent, reactive } from 'vue'
+import { BloxComponent } from 'vue-blox'
 
 export default defineComponent({
 	name: 'App',
@@ -77,12 +77,12 @@ export default defineComponent({
 	setup() {
 
 		// Construct some variables to provide bound data to our props:
-		const inputBindings: any = {
+		const variables = reactive({
 			someVariable: 'Hello, Variables!'
-		}
+		})
 		
-		// Construct a JS object to render. We bind the 'text' prop to the value of 'someVariable' in our variables:
-		const inputView: any = {
+		// Construct a view to render. We bind the 'text' prop to the value of 'someVariable' in our variables:
+		const view = {
 			type: 'stack',
 			'slot:children': [
 				{
@@ -96,13 +96,9 @@ export default defineComponent({
 			]
 		}
 
-		// Parse the input bindings into a BloxBindings instance, and pass it to the getBloxView(...) call:
-		const bindings = getBloxBindings(inputBindings)
-		const view = getBloxView(inputView, bindings)
-
 		return {
 			view,
-			bindings
+			variables
 		}
 	},
 })
@@ -111,10 +107,10 @@ export default defineComponent({
 ```html
 <template>
 	<main>
-		<!-- Pass the view and bindings to a BloxComponent for rendering -->
-		<BloxComponent :view="view" :bindings="bindings"/>
+		<!-- Pass the view and variables to a BloxComponent for rendering -->
+		<BloxComponent :view="view" :variables="variables"/>
 	</main>
 </template>
 ```
 
-Note that bindings are automatically exposed to all slots of a [BloxComponent](/docs/api/components/blox-component), recursively. In the above example, the second label component we put in the stack has it's text prop bound to the 'someVariable' entry in our bindings.
+Note that variables are automatically exposed to all slots of a [BloxComponent](/docs/api/components/blox-component), recursively. In the above example, the second label component we put in the stack has it's text prop bound to the 'someVariable' entry in our variables.

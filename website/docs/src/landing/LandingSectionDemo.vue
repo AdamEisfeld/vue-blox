@@ -2,7 +2,7 @@
 import { defineComponent, Ref, ref, watch, computed, ComponentPublicInstance } from 'vue'
 import { BloxComponent } from '../../../node_modules/vue-blox'
 import { getPluginMustache } from 'vue-blox-mustache'
-import { getPluginCompute, getPluginEmit } from 'vue-blox-expressions'
+import { getPluginCompute, getPluginEvent } from 'vue-blox-expressions'
 import { Parser } from 'expr-eval'
 import LayoutSection from '../layouts/LayoutSection.vue'
 import Button from '../components/Button.vue'
@@ -102,28 +102,10 @@ export default defineComponent({
 			} catch(error) {
 				// ignore
 			}
-
-			// bindings.value = getBloxBindings(inputBindings.value)
-			// const updatedViews: BloxView[] = []
-			// for (let i = 0; i < inputViews.value.length; i += 1) {
-			// 	const inputView = inputViews.value[i]
-			// 	const view = getBloxView(inputView, bindings.value)
-			// 	updatedViews.push(view)
-			// }
-			// views.value = updatedViews
 		}
 
 		const rebuildJSON = () => {
-		
-			// const flattenedVariables: Record<string, any> = {}
-			// Object.assign(flattenedVariables, inputBindings.value)
-			// for (let v = 0; v < Object.keys(bindings.value.entries).length; v += 1) {
-			// 	const key = Object.keys(bindings.value.entries)[v]
-			// 	const value = bindings.value.entries[key].value
-			// 	flattenedVariables[key] = value
-			// }
 			inputBindingsJson.value = Object.keys(inputBindings.value).length > 0 ? JSON.stringify(inputBindings.value, null, '\t') : undefined
-
 		}
 
 		const addComponent = (component: { name: string, model: any }) => {
@@ -194,15 +176,24 @@ export default defineComponent({
 			inputViewsJson.value = props.startingModels ? JSON.stringify(props.startingModels, null, '\t') : undefined
 		}
 	
+		const parser = new Parser()
+		parser.functions.console = (message: any) => {
+			console.log(message)
+		}
+
 		const plugins = [
 			getPluginMustache(),
 			getPluginCompute({
 				parser: new Parser()
 			}),
-			getPluginEmit({
-				parser: new Parser()
+			getPluginEvent({
+				parser: parser
 			})
 		]
+
+		const handleError = (error: Error) => {
+			console.log(error)
+		}
 
 		rebuildLivePreview()
 
@@ -222,8 +213,8 @@ export default defineComponent({
 			hasChangedModel,
 			hasChangedVariables,
 			plugins,
+			handleError,
 		}
-		return {}
 	},
 })
 
@@ -300,7 +291,7 @@ export default defineComponent({
 					<!-- Body -->
 					<div class="flex flex-col gap-4 p-8 h-min overflow-scroll select-none min-h-64 max-h-96">
 						<template v-for="view in inputViews">
-							<BloxComponent :view="view" :variables="inputBindings" :catalog="catalog" class="w-full h-auto" :plugins="plugins"/> 
+							<BloxComponent :view="view" :variables="inputBindings" :catalog="catalog" class="w-full h-auto" :plugins="plugins" @on:error="error => handleError(error)"/> 
 						</template>
 					</div>
 

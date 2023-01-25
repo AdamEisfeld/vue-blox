@@ -1,5 +1,5 @@
 
-<img src="https://user-images.githubusercontent.com/2840242/207716387-7ff01edc-1718-4e4c-87d7-40fb917dd937.png" alt="VueBlox" width="200"/>
+<img src="https://user-images.githubusercontent.com/2840242/214480309-2e51ae13-cc1a-4504-81bd-db828f69bee3.png" alt="VueBlox" width="200"/>
 
 ![Coverage Badge](https://img.shields.io/endpoint?url=https://gist.githubusercontent.com/AdamEisfeld/5deff13e382d361bfceea173202bbc7a/raw/1c5992463931db5719d223737d9509e605f950d9/vue-blox__heads_main.json)
 [![Netlify Status](https://api.netlify.com/api/v1/badges/49f89bf0-d9ef-4a2e-9c9d-8e62eb08bc8a/deploy-status)](https://app.netlify.com/sites/tangerine-belekoy-3f1174/deploys)
