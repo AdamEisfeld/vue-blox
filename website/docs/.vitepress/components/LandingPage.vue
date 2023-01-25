@@ -20,7 +20,7 @@ import DemoHeadingComponent from '../../src/demo/DemoHeadingComponent.vue'
 import DemoCellComponent from '../../src/demo/DemoCellComponent.vue'
 import DemoImageComponent from '../../src/demo/DemoImageComponent.vue'
 import DemoButtonComponent from '../../src/demo/DemoButtonComponent.vue'
-import { BloxError } from 'vue-blox'
+import { BloxError } from '../../../node_modules/vue-blox'
 
 export default defineComponent({
 	name: 'LandingPage',

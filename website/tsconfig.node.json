@@ -5,5 +5,5 @@
     "moduleResolution": "Node",
     "allowSyntheticDefaultImports": true
   },
-  "include": ["docs/vite.config.tsig.ts"]
+  "include": ["./docs/.vitepress/config.cts"]
 }

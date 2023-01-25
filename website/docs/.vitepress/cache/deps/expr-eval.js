@@ -1,5 +1,3 @@
-import "./chunk-TWLJ45QX.js";
-
 // node_modules/expr-eval/dist/index.mjs
 var INUMBER = "INUMBER";
 var IOP1 = "IOP1";
@@ -1540,6 +1538,7 @@ function Parser(options) {
     max,
     hypot: Math.hypot || hypot,
     pyt: Math.hypot || hypot,
+    // backward compat
     pow: Math.pow,
     atan2: Math.atan2,
     "if": condition,
@@ -1621,4 +1620,18 @@ export {
   Parser,
   dist_default as default
 };
+/*! Bundled license information:
+
+expr-eval/dist/index.mjs:
+  (*!
+   Based on ndef.parser, by Raphael Graf(r@undefined.ch)
+   http://www.undefined.ch/mparser/index.html
+  
+   Ported to JavaScript and modified by Matthew Crumley (email@matthewcrumley.com, http://silentmatt.com/)
+  
+   You are free to use and modify this code in anyway you find useful. Please leave this comment in the code
+   to acknowledge its original source. If you feel like it, I enjoy hearing about projects that use my code,
+   but don't feel like you have to let me know or ask permission.
+  *)
+*/
 //# sourceMappingURL=expr-eval.js.map

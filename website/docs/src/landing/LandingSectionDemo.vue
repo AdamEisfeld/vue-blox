@@ -1,8 +1,8 @@
 <script lang="ts">
 import { defineComponent, Ref, ref, watch, computed, ComponentPublicInstance } from 'vue'
 import { BloxComponent } from '../../../node_modules/vue-blox'
-import { getPluginMustache } from 'vue-blox-mustache'
-import { getPluginCompute, getPluginEvent } from 'vue-blox-expressions'
+import { getPluginMustache } from '../../../node_modules/vue-blox-mustache'
+import { getPluginCompute, getPluginEvent } from '../../../node_modules/vue-blox-expressions'
 import { Parser } from 'expr-eval'
 import LayoutSection from '../layouts/LayoutSection.vue'
 import Button from '../components/Button.vue'

@@ -3,14 +3,13 @@ import {
   icon,
   parse$1,
   text
-} from "./chunk-3YAHEKTF.js";
+} from "./chunk-FJBXHHHM.js";
 import {
   computed,
   defineComponent,
   h,
   watch
-} from "./chunk-3T6VSYDD.js";
-import "./chunk-TWLJ45QX.js";
+} from "./chunk-6S52NMOK.js";
 
 // node_modules/@fortawesome/vue-fontawesome/index.es.js
 function ownKeys(object, enumerableOnly) {
