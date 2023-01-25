@@ -8,11 +8,11 @@ import { BloxError } from './BloxError'
  */
 export class BloxPluginBind implements BloxPluginInterface {
 
-	run(key: string, value: any, variables: any, setProp: (key: string, value: any) => void, setSlot: (slotName: string, views: any[]) => void ): void {
+	run(key: string, value: any, variables: any, setProp: (key: string, value: any) => void, setSlot: (slotName: string, views: any[]) => void ): { key: string, value: any } {
 		
 		const bindSpecifier = 'bind:'
 		if (!key.startsWith(bindSpecifier)) {
-			return
+			return { key, value }
 		}
 
 		// This is a bound prop. 
@@ -48,6 +48,11 @@ export class BloxPluginBind implements BloxPluginInterface {
 		setProp(`onUpdate:${propName}`, (newValue: any) => {
 			variables[variableName] = newValue
 		})
+
+		return {
+			key: propName,
+			value: value,
+		}
 		
 	}
 

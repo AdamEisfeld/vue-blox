@@ -110,9 +110,38 @@ test('Slot plugin allows slots to be specified with zero children', async () => 
 
 	// When
 
-	// const bindings = getBloxBindings({})
-
 	plugin.run('slot:children', [], {}, setProp, setSlot)
+
+	// Then
+
+	expect(computedSlots).toBeDefined()
+
+})
+
+test('Slot plugin allows slots to be specified with undefined children', async () => {
+
+	// Given
+
+	const plugin = new BloxPluginSlot()
+
+	const computedProps: Record<string, any> = {}
+	const computedSlots: Record<string, any[]> = {}
+	
+	const setProp = (propName: string, value: any) => {
+		if (value) {
+			computedProps[propName] = value
+		} else {
+			delete computedProps[propName]
+		}
+	}
+
+	const setSlot = (slotName: string, views: any[]) => {
+		computedSlots[slotName] = views
+	}
+
+	// When
+
+	plugin.run('slot:children', undefined, {}, setProp, setSlot)
 
 	// Then
 

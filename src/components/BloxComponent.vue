@@ -26,7 +26,7 @@ export default defineComponent({
 		catalog: {
 			type: Object as () => Record<string, ComponentPublicInstance<any>>,
 			required: false,
-			default: BloxGlobal.shared.catalog,
+			default: undefined,
 		},
 		view: {
 			type: Object as () => any,
@@ -45,91 +45,86 @@ export default defineComponent({
 		},
 	},
 	emits: [
-		'on:error'
+		'handleError'
 	],
 	setup(props, { emit }) {
 
 		const getPlugins = computed(() => {
-			try {
-				const usePlugins: BloxPluginInterface[] = props.plugins
-				if (usePlugins.length === 0) {
-					usePlugins.push(...BloxGlobal.shared.plugins)
-				}
-				usePlugins.push(new BloxPluginBind())
-				usePlugins.push(new BloxPluginSlot())
-				return usePlugins
-			} catch(error) {
-				emit('on:error', error)
-				return []
+			const usePlugins: BloxPluginInterface[] = props.plugins
+			if (usePlugins.length === 0) {
+				usePlugins.push(...BloxGlobal.shared.plugins)
 			}
+			usePlugins.push(new BloxPluginBind())
+			usePlugins.push(new BloxPluginSlot())
+			return usePlugins
 		})
 
-		const getView = computed((): { isSet: boolean, type: string | undefined, props: Record<string, any> | undefined, slots: Record<string, any[]> | undefined } => {
+		const getCatalog = computed(() => {
+			return props.catalog ?? BloxGlobal.shared.catalog
+		})
 
-			try {
+		const getView = computed((): { isSet: boolean, type: string | undefined, props: Record<string, any>, slots: Record<string, any[]> } => {
 
-				const { view, variables } = props
+			const { view, variables } = props
 			
-				if (!view) {
-					return {
-						isSet: false,
-						type: undefined,
-						props: undefined,
-						slots: undefined
-					}
-				}
-
-				const { type } = view
-				const plugins = getPlugins.value
-
-				const viewKeys = Object.keys(view)
-
-				const computedProps: Record<string, any> = {}
-				Object.assign(computedProps, view)
-				const computedSlots: Record<string, any[]> = {}
-
-				const setProp = (propName: string, value: any) => {
-					if (value) {
-						computedProps[propName] = value
-					} else {
-						delete computedProps[propName]
-					}
-				}
-
-				const setSlot = (slotName: string, views: any[]) => {
-					computedSlots[slotName] = views
-				}
-
-				for (let k = 0; k < viewKeys.length; k += 1) {
-					const key = viewKeys[k]
-					let value = view[key]
-
-					for (let p = 0; p < plugins.length; p += 1) {
-						const plugin = plugins[p]
-						plugin.run(key, value, variables, setProp, setSlot)
-					}
-				}
-
-				return {
-					isSet: true,
-					type: type,
-					props: computedProps,
-					slots: computedSlots,
-				}
-			} catch(error) {
-				emit('on:error', error)
+			if (!view) {
 				return {
 					isSet: false,
 					type: undefined,
 					props: {},
-					slots: {},
+					slots: {}
 				}
+			}
+
+			const { type } = view
+			const plugins = getPlugins.value
+
+			const viewKeys = Object.keys(view)
+
+			const computedProps: Record<string, any> = JSON.parse(JSON.stringify(view))
+			const computedSlots: Record<string, any[]> = {}
+
+			const setProp = (propName: string, value: any) => {
+				if (value) {
+					computedProps[propName] = value
+				} else {
+					delete computedProps[propName]
+				}
+			}
+
+			const setSlot = (slotName: string, views: any[]) => {
+				computedSlots[slotName] = views
+			}
+
+			for (let k = 0; k < viewKeys.length; k += 1) {
+				
+				let key = viewKeys[k]
+				let value = view[key]
+
+				for (let p = 0; p < plugins.length; p += 1) {
+					const plugin = plugins[p]
+					try {
+						const result = plugin.run(key, value, variables, setProp, setSlot)
+						key = result.key
+						value = result.value
+					} catch(error) {
+						emit('handleError', error)
+					}
+				}
+			}
+
+			return {
+				isSet: true,
+				type: type,
+				props: computedProps,
+				slots: computedSlots,
 			}
 
 		})
 
 		return {
 			getView,
+			getCatalog,
 			emit,
 		}
 	},
@@ -138,10 +133,10 @@ export default defineComponent({
 </script>
 	
 <template>
-	<component v-if="getView.isSet && getView.type" :is="catalog[getView.type]" v-bind="getView.props">
-		<template v-for="slotName in Object.keys(getView.slots ?? {})" :key="slotName" v-slot:[slotName]>
-			<template v-for="slotModel in (getView.slots ?? {})[slotName]">
-				<BloxComponent :catalog="catalog" :view="slotModel" :variables="variables" :plugins="plugins" @on:error="(error: any) => emit('on:error', error)"/>
+	<component v-if="getView.isSet && getView.type" :is="getCatalog[getView.type]" v-bind="getView.props">
+		<template v-for="slotName in Object.keys(getView.slots)" :key="slotName" v-slot:[slotName]>
+			<template v-for="slotModel in (getView.slots)[slotName]">
+				<BloxComponent :catalog="getCatalog" :view="slotModel" :variables="variables" :plugins="plugins" @handleError="(error: any) => emit('handleError', error)"/>
 			</template>
 		</template>
 	</component>

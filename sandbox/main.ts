@@ -8,31 +8,14 @@
 
 
 import { createApp } from 'vue'
-import { BloxError, registerBlox } from '../src'
-
-import StackComponent from './StackComponent.vue'
-import ButtonComponent from './ButtonComponent.vue'
+import { registerBlox } from '../src'
 
 import App from './App.vue'
 
 const app = createApp(App)
 
-
-
-const blox = registerBlox({
-	catalog: {
-		'stack': StackComponent,
-		'button': ButtonComponent
-	},
-})
+const blox = registerBlox()
 
 app.use(blox)
-
-// app.config.errorHandler = (error: any) => {
-// 	if (error.) {
-
-// 	}
-// 	console.log(error)
-// }
 
 app.mount('#app')

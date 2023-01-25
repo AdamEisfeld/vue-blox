@@ -1,12 +1,14 @@
 import { test, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { reactive } from 'vue'
-import { BloxComponent } from '../src'
+import { BloxComponent, BloxError } from '../src'
 import { TestPluginSmileys } from './TestPluginSmileys'
+import { TestPluginCrash } from './TestPluginCrash'
 import TestLabelComponent from './TestLabelComponent.vue'
 import TestButtonCounterComponent from './TestButtonCounterComponent.vue'
 import TestStackComponent from 'tests/TestStackComponent.vue'
 import TestStackNoNameComponent from './TestStackNoNameComponent.vue'
+import { BloxGlobal } from 'src/classes/BloxGlobal'
 
 test('Empty settings passed to Blox Component does not crash', async () => {
 
@@ -26,7 +28,7 @@ test('Simple blox component is rendered', async () => {
 		'label' : TestLabelComponent
 	}
 
-	const inputView = {
+	const view = {
 		'type': 'label',
 		'text': 'Hello, world!'
 	}
@@ -36,7 +38,7 @@ test('Simple blox component is rendered', async () => {
 	const wrapper = mount(BloxComponent, {
 		props: {
 			catalog: catalog,
-			view: inputView,
+			view: view,
 			variables: undefined,
 			plugins: undefined,
 		},
@@ -245,5 +247,44 @@ test('Blox Component uses plugins', async () => {
 	// Then
 
 	expect(wrapper.text()).toContain('Some 😊 people 😊 use')
+
+})
+
+test('Blox Component emits error on running crashing plugin', async () => {
+
+	// Given
+
+	const catalog = {
+		'label' : TestLabelComponent
+	}
+
+	const view = {
+		'type': 'label',
+		'text': 'This is a test.'
+	}
+
+	const plugin = new TestPluginCrash()
+	
+	let thrownError: any = undefined
+	const onError = (error: BloxError) => {
+		thrownError = error
+	}
+
+	// When
+
+	const wrapper = mount(BloxComponent, {
+		props: {
+			catalog: catalog,
+			view: view,
+			variables: undefined,
+			plugins: [plugin],
+			"onHandleError": onError
+		},
+	})
+	await wrapper.vm.$nextTick()
+
+	// Then
+
+	expect(thrownError).toBeDefined()
 
 })

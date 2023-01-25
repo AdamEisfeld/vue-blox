@@ -1,4 +1,6 @@
-# Plugin: Mustache <div class="animate-bounce inline-block"><span>{</span></div>
+<img src="./logoMustacheSimple.png" class="w-32 p-4"/>
+
+# Plugin: Mustache
 
 [View on Github](https://github.com/AdamEisfeld/vue-blox-mustache)
 

@@ -1,3 +1,5 @@
+<img src="./logoExpressionsSimple.png" class="w-32 p-4"/>
+
 # Plugin: Expressions
 
 [View on Github](https://github.com/AdamEisfeld/vue-blox-expressions)

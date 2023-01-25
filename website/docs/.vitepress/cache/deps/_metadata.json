@@ -1,62 +1,56 @@
 {
-  "hash": "7b015220",
-  "browserHash": "cbf9751a",
+  "hash": "e8925d81",
+  "browserHash": "df2deee0",
   "optimized": {
     "vue": {
       "src": "../../../../node_modules/vue/dist/vue.runtime.esm-bundler.js",
       "file": "vue.js",
-      "fileHash": "f10e5b16",
+      "fileHash": "2d586d88",
       "needsInterop": false
     },
     "@fortawesome/fontawesome-svg-core": {
       "src": "../../../../node_modules/@fortawesome/fontawesome-svg-core/index.mjs",
       "file": "@fortawesome_fontawesome-svg-core.js",
-      "fileHash": "c255237f",
+      "fileHash": "21156497",
       "needsInterop": false
     },
     "@fortawesome/vue-fontawesome": {
       "src": "../../../../node_modules/@fortawesome/vue-fontawesome/index.es.js",
       "file": "@fortawesome_vue-fontawesome.js",
-      "fileHash": "038b9053",
+      "fileHash": "df2f33f7",
       "needsInterop": false
     },
     "@fortawesome/free-brands-svg-icons": {
       "src": "../../../../node_modules/@fortawesome/free-brands-svg-icons/index.mjs",
       "file": "@fortawesome_free-brands-svg-icons.js",
-      "fileHash": "71abc4f1",
+      "fileHash": "29ad5e29",
       "needsInterop": false
     },
     "@fortawesome/free-solid-svg-icons": {
       "src": "../../../../node_modules/@fortawesome/free-solid-svg-icons/index.mjs",
       "file": "@fortawesome_free-solid-svg-icons.js",
-      "fileHash": "ce6d1501",
+      "fileHash": "9b9a8a01",
       "needsInterop": false
     },
     "@fortawesome/free-regular-svg-icons": {
       "src": "../../../../node_modules/@fortawesome/free-regular-svg-icons/index.mjs",
       "file": "@fortawesome_free-regular-svg-icons.js",
-      "fileHash": "79f8fb04",
+      "fileHash": "6857879b",
       "needsInterop": false
     },
     "expr-eval": {
       "src": "../../../../node_modules/expr-eval/dist/index.mjs",
       "file": "expr-eval.js",
-      "fileHash": "d51ad1a9",
-      "needsInterop": false
-    },
-    "vue-blox": {
-      "src": "../../../../node_modules/vue-blox/dist/vue-blox.es.js",
-      "file": "vue-blox.js",
-      "fileHash": "5a4336e3",
+      "fileHash": "f1b7b2f0",
       "needsInterop": false
     }
   },
   "chunks": {
-    "chunk-FJBXHHHM": {
-      "file": "chunk-FJBXHHHM.js"
-    },
     "chunk-6S52NMOK": {
       "file": "chunk-6S52NMOK.js"
+    },
+    "chunk-FJBXHHHM": {
+      "file": "chunk-FJBXHHHM.js"
     }
   }
 }

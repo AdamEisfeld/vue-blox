@@ -9,12 +9,12 @@ import type { BloxPluginInterface } from '../interfaces/BloxPluginInterface'
  * @param options Initialization options to use when setting up Vue Blox. Specify a global catalog and array of plugins to use throoughout the application. 
  * @returns 
  */
-export function registerBlox(options: { catalog: Record<string, ComponentPublicInstance<any>>, plugins?: BloxPluginInterface[] }): Plugin {
+export function registerBlox(options?: { catalog?: Record<string, ComponentPublicInstance<any>>, plugins?: BloxPluginInterface[] }): Plugin {
 
 	const blox: Plugin = {
 		install: (app: App, inner: Record<string, ComponentPublicInstance<any>>) => {
-			Object.assign(BloxGlobal.shared.catalog, options.catalog)
-			BloxGlobal.shared.plugins = options.plugins ?? []
+			BloxGlobal.shared.catalog = options?.catalog ?? {}
+			BloxGlobal.shared.plugins = options?.plugins ?? []
 			app.component('BloxComponent', BloxComponent)
 		}
 	}

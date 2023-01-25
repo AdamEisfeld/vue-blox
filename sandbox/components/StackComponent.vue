@@ -21,7 +21,6 @@ export default defineComponent({
 
 <style>
 	.container {
-		display: flex;
-		flex-direction: column;
+		display: flex; flex-wrap: no-wrap; flex-direction: column; align-items: stretch; gap: 12px;
 	}
 </style>

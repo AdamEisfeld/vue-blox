@@ -4,7 +4,18 @@ Vue Blox is extendable through plugins. In fact, Vue Blox uses it's plugin syste
 
 Plugins are evaluated any time one of the views or variables being rendered within a BloxComponent changes. For this reason, plugins should exit early if they find they are not needed for the given key/value pair, and should be kept relatively light-weight.
 
-Plugins are stackable, meaning each plugin registered (either globally via registerBlox(...) or explicitly via a BloxComponent's plugins prop) will be evaluated for each key/value of the view being rendered, in the order the plugins have been registered.
+Plugins are stackable, meaning each plugin registered (either globally via registerBlox(...) or explicitly via a BloxComponent's plugins prop) will be evaluated for each key/value of the view being rendered, in the order the plugins have been registered. This also means you can have multiple plugins work at once for a given entry in your view. For example, you could use the Mustache and Expression plugins to evaluate a view that combines them both:
+
+```ts
+const variables = {
+	"score": 0
+}
+
+const view = {
+	"type": "label",
+	"compute:text": "score < 10 ? 'Your score of {{ score }} is low!' : 'Great score!'"
+}
+```
 
 Plugins have the ability to set props (via the setProp(...) function they are given) or set slots (via the setSlot(...) function they are given). If a prop is set to undefined, it will be deleted.
 
@@ -17,7 +28,7 @@ import { BloxPluginInterface } from 'vue-blox'
 
 class BloxPluginEmoji implements BloxPluginInterface {
 
-	run(key: string, value: any, variables: any, setProp: (key: string, value: any) => void, setSlot: (slotName: string, views: any[]) => void ): void {
+	run(key: string, value: any, variables: any, setProp: (key: string, value: any) => void, setSlot: (slotName: string, views: any[]) => void ): { key: string, value: any } {
 		// Plugin logic goes here
 	}
 
@@ -42,7 +53,7 @@ import { BloxPluginInterface } from 'vue-blox'
 
 class BloxPluginEmoji implements BloxPluginInterface {
 
-	run(key: string, value: any, variables: any, setProp: (key: string, value: any) => void, setSlot: (slotName: string, views: any[]) => void ): void {
+	run(key: string, value: any, variables: any, setProp: (key: string, value: any) => void, setSlot: (slotName: string, views: any[]) => void ): { key: string, value: any } {
 
 		if (typeof value !== 'string') {
 			return
@@ -55,6 +66,13 @@ class BloxPluginEmoji implements BloxPluginInterface {
 			.replace(/\[heart\]/g, '😍')
 
 		setProp(key, updatedValue)
+
+		// Return our updated value in place of the input value, to be passed to the next plugin (if any)
+
+		return {
+			key,
+			value: updatedValue
+		}
 
 	}
 

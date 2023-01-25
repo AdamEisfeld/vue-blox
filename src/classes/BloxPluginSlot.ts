@@ -9,11 +9,11 @@ import type { BloxPluginInterface } from '../interfaces/BloxPluginInterface'
  */
 export class BloxPluginSlot implements BloxPluginInterface {
 
-	run(key: string, value: any, variables: any, setProp: (key: string, value: any) => void, setSlot: (slotName: string, views: any[]) => void ): void {
+	run(key: string, value: any, variables: any, setProp: (key: string, value: any) => void, setSlot: (slotName: string, views: any[]) => void ): { key: string, value: any } {
 		
 		const slotSpecifier = 'slot:'
 		if (!key.startsWith(slotSpecifier)) {
-			return
+			return { key, value }
 		}
 
 		// This is a child slot
@@ -33,15 +33,14 @@ export class BloxPluginSlot implements BloxPluginInterface {
 		} else if (typeof value === 'object') {
 			inputSlotViews = [value]
 		}
-		if (!inputSlotViews || inputSlotViews.length === 0) {
-			return
+
+		setSlot(slotName, inputSlotViews ?? [])
+		
+		return {
+			key: slotName,
+			value: value,
 		}
 
-		const slots: Record<string, any[]> = {}
-		slots[slotName] = inputSlotViews
-		
-		setSlot(slotName, inputSlotViews)
-		
 	}
 
 }

@@ -1,10 +1,10 @@
 <script lang="ts">
 
-import { defineComponent, watch, reactive } from 'vue'
-import BloxComponent from '../src/components/BloxComponent.vue'
-import { BloxError, type BloxPluginInterface } from '../src'
-import { getPluginEvent } from 'vue-blox-expressions'
-import { Parser } from 'expr-eval'
+import { defineComponent, reactive } from 'vue'
+import { BloxComponent } from '../src'
+import StackComponent from './components/StackComponent.vue'
+import LabelComponent from './components/LabelComponent.vue'
+import ButtonComponent from './components/ButtonComponent.vue'
 
 export default defineComponent({
 	name: 'App',
@@ -14,90 +14,50 @@ export default defineComponent({
 	props: {},
 	setup() {
 
-		// 1. Construct variables
+		// 1. Catalog
+
+		const catalog = {
+			'stack': StackComponent,
+			'label': LabelComponent,
+			'button': ButtonComponent,
+		}
 		
-		const variables: any = reactive({
-			bar: 'Adam',
-			foo: 'Tom',
-			baz: 'Joey',
-			score: 0,
+		// 2. Construct variables
+		
+		const variables = reactive({
+			message: 'Hello, world!',
 		})
 
-		// 2. Construct view
+		// 3. Construct view
 
-		const view: any = {
+		const view = reactive({
 			type: 'stack',
 			'slot:children': [
 				{
-					type: 'button',
-					'bind:message': 'foo',
-					'bind:count': 'score',
-					'event:user:clickedMe': 'alert("Hello")',
-					'event:onClick': 'alert("Clicked")'
+					type: 'label',
+					'bind:text': 'message',
 				},
 				{
 					type: 'button',
-					'message': '[smiley] Hello',
-					'bind:count': 'score',
-				}
+					title: 'Click Me',
+				},
 			]
-		}
-
-		watch(variables, () => {
-			console.log('Changes have been made!')
-		}, {
-			deep: true
 		})
 
-		const onError = (error: any) => {
-			console.log('Error detected')
-			const bloxError = BloxError.asBloxError(error)
-			if (bloxError) {
-				console.log(bloxError.debugMessage)
-			} else {
-				console.log(error)
-			}
-		}
-
-		class TestPluginSmileys implements BloxPluginInterface {
-
-			run(key: string, value: any, variables: any, setProp: (key: string, value: any) => void, setSlot: (slotName: string, views: any[]) => void ): void {
-
-				if (typeof value !== 'string') {
-					return undefined
-				}
-				setProp(key, (value as string).replace(/\[smiley\]/g, '😊'))
-
-			}
-
-		}
-
-		const parser = new Parser()
-		parser.functions.alert = (message: string) => {
-			window.alert(message)
-		}
-
-		const plugins = [
-			new TestPluginSmileys(),
-			getPluginEvent({
-				parser: parser
-			})
-		]
-
-		variables.score = 4
-
 		return {
+			catalog,
 			variables,
 			view,
-			onError,
-			plugins,
 		}
 	},
 })
 </script>
 
 <template>
-	<main>
-		<BloxComponent :view="view" :variables="variables" @on:error="error => onError(error)" :plugins="plugins"/>
+	<main style="padding: 48px; display: flex; flex-wrap: no-wrap; flex-direction: column; align-items: center; gap: 48px;">
+		<img src="/logoVueBlox.png" width="200"/>
+		<div style="padding: 24px; border-style: solid; border-color: gray; border-radius: 12px;">
+			<BloxComponent :catalog="catalog" :view="view" :variables="variables" :plugins="plugins"/>
+		</div>
 	</main>
 </template>
