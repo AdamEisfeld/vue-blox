@@ -1,9 +1,12 @@
 <script lang="ts">
+import type { BloxContext } from '../classes/BloxContext'
 import { defineComponent, computed, type ComponentPublicInstance } from 'vue'
 import { BloxGlobal } from '../classes/BloxGlobal'
 import { BloxPluginBind } from '../classes/BloxPluginBind'
 import { BloxPluginSlot } from '../classes/BloxPluginSlot'
 import type { BloxPluginInterface } from '../interfaces/BloxPluginInterface'
+import BloxComponentInternal from './BloxComponentInternal.vue'
+import { buildRootContext } from '../composables/buildRootContext'
 
 /**
  * A dynamic Vue component that renders an external Vue component based on the 'type' field on the view object provided in
@@ -20,124 +23,88 @@ import type { BloxPluginInterface } from '../interfaces/BloxPluginInterface'
  * 
  */
 export default defineComponent({
-	name: 'BloxComponent',
-	components: undefined,
-	props: {
-		catalog: {
-			type: Object as () => Record<string, ComponentPublicInstance<any>>,
-			required: false,
-			default: undefined,
-		},
-		view: {
-			type: Object as () => any,
-			required: false,
-			default: undefined,
-		},
-		variables: {
-			type: Object as () => any,
-			required: false,
-			default: {},
-		},
-		plugins: {
-			type: Object as () => BloxPluginInterface[],
-			required: false,
-			default: []
-		},
+    name: "BloxComponent",
+    components: {
+		BloxComponentInternal
 	},
-	emits: [
-		'handleError'
-	],
-	setup(props, { emit }) {
+    props: {
+        catalog: {
+            type: Object as () => Record<string, ComponentPublicInstance<any>>,
+            required: false,
+            default: undefined,
+        },
+        view: {
+            type: Object as () => any,
+            required: false,
+            default: undefined,
+        },
+        variables: {
+            type: Object as () => any,
+            required: false,
+            default: {},
+        },
+        plugins: {
+            type: Object as () => BloxPluginInterface[],
+            required: false,
+            default: []
+        },
+    },
+    emits: [
+        "handleErrors"
+    ],
+    setup(props, { emit }) {
 
-		const getPlugins = computed(() => {
-			const usePlugins: BloxPluginInterface[] = props.plugins
-			if (usePlugins.length === 0) {
-				usePlugins.push(...BloxGlobal.shared.plugins)
-			}
-			usePlugins.push(new BloxPluginBind())
-			usePlugins.push(new BloxPluginSlot())
-			return usePlugins
-		})
+        /**
+         * A computed value that obtains the plugins to use for our view
+         */
+        const getPlugins = computed(() => {
+            const usePlugins: BloxPluginInterface[] = props.plugins
+            if (usePlugins.length === 0) {
+                usePlugins.push(...BloxGlobal.shared.plugins)
+            }
+            // Always append the stock bind / slot plugins
+            usePlugins.push(new BloxPluginBind())
+            usePlugins.push(new BloxPluginSlot())
+            return usePlugins
+        })
 
-		const getCatalog = computed(() => {
-			return props.catalog ?? BloxGlobal.shared.catalog
-		})
+        /**
+         * A computed value that obtains the catalog to use for our view
+         */
+        const getCatalog = computed(() => {
+            return props.catalog ?? BloxGlobal.shared.catalog
+        })
 
-		const getView = computed((): { isSet: boolean, type: string | undefined, props: Record<string, any>, slots: Record<string, any[]> } => {
+        /**
+         * A computed value that obtains the props / slots to provide to our embedded component
+         */
+        const getContext = computed((): BloxContext | undefined => {
 
-			const { view, variables } = props
-			
-			if (!view) {
-				return {
-					isSet: false,
-					type: undefined,
-					props: {},
-					slots: {}
-				}
-			}
+			const result = buildRootContext({
+				view: props.view,
+				variables: props.variables,
+				catalog: getCatalog.value,
+				plugins: getPlugins.value
+			})
 
-			const { type } = view
-			const plugins = getPlugins.value
-
-			const viewKeys = Object.keys(view)
-
-			const computedProps: Record<string, any> = JSON.parse(JSON.stringify(view))
-			const computedSlots: Record<string, any[]> = {}
-
-			const setProp = (propName: string, value: any) => {
-				if (value) {
-					computedProps[propName] = value
-				} else {
-					delete computedProps[propName]
-				}
-			}
-
-			const setSlot = (slotName: string, views: any[]) => {
-				computedSlots[slotName] = views
-			}
-
-			for (let k = 0; k < viewKeys.length; k += 1) {
-				
-				let key = viewKeys[k]
-				let value = view[key]
-
-				for (let p = 0; p < plugins.length; p += 1) {
-					const plugin = plugins[p]
-					try {
-						const result = plugin.run(key, value, variables, setProp, setSlot)
-						key = result.key
-						value = result.value
-					} catch(error) {
-						emit('handleError', error)
-					}
-				}
+			if (result && result.errors && result.errors.length > 0) {
+				emit('handleErrors', result.errors)
 			}
 
-			return {
-				isSet: true,
-				type: type,
-				props: computedProps,
-				slots: computedSlots,
-			}
+			return result?.context
 
-		})
+        })
 
-		return {
-			getView,
-			getCatalog,
-			emit,
-		}
-	},
+        return {
+            getContext,
+            getCatalog,
+            emit,
+        }
+    },
 })
 
 </script>
 	
 <template>
-	<component v-if="getView.isSet && getView.type" :is="getCatalog[getView.type]" v-bind="getView.props">
-		<template v-for="slotName in Object.keys(getView.slots)" :key="slotName" v-slot:[slotName]>
-			<template v-for="slotModel in (getView.slots)[slotName]">
-				<BloxComponent :catalog="getCatalog" :view="slotModel" :variables="variables" :plugins="plugins" @handleError="(error: any) => emit('handleError', error)"/>
-			</template>
-		</template>
-	</component>
+	<BloxComponentInternal :context="getContext"/>
 </template>

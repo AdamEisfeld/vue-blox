@@ -1,3 +1,5 @@
+import type { BloxContext } from '../src/classes/BloxContext'
+import type { ComponentPublicInstance } from 'vue'
 import type { BloxPluginInterface } from '../src/interfaces/BloxPluginInterface'
 
 /**
@@ -5,7 +7,18 @@ import type { BloxPluginInterface } from '../src/interfaces/BloxPluginInterface'
  */
 export class TestPluginCrash implements BloxPluginInterface {
 
-	run(key: string, value: any, variables: any, setProp: (key: string, value: any) => void, setSlot: (slotName: string, views: any[]) => void ): { key: string, value: any } {
+	failingKey: string | undefined
+
+	constructor(failingKey: string | undefined) {
+		this.failingKey = failingKey
+	}
+
+	run({ context, key, value, variables, buildContext }: { context: BloxContext, key: string, value: any, variables: any, buildContext: ({ view, variables }: { view: any, variables: any }) => BloxContext | undefined }): void {
+		
+		if (this.failingKey && key !== this.failingKey) {
+			return
+		}
+
 		throw new Error('Failed')
 	}
 

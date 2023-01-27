@@ -1,32 +1,14 @@
 # Error Handling
 
-Typically, any errors thrown by Vue Blox will be of the type [BloxError](/docs/api/classes/blox-error). You can inspect any thrown error to see if it is a [BloxError](/docs/api/classes/blox-error) via the asBloxError() static function:
+Typically, any errors thrown by Vue Blox will happen during plugin evaluation. These errors are caught by the [BloxComponent](/docs/api/components/blox-component) and stored in an array of type ```{ view: any, error: Error }[]```, emitted from the component's handleErrors() event whenever any are detected.
 
-## BloxError
+You can inspect each result's "view" property in the handleErrors() callback, which will be a copy of the view (or subview in the case of slots) you provided to the [BloxComponent](/docs/api/components/blox-component).
 
 ```ts
-import { BloxError } from 'vue-blox'
-
-// ...
-
-try {
-	const view = getBloxView(...)
-} catch(error) {
-	const bloxError = BloxError.asBloxError(error)
-	if (bloxError) {
-		// Inspect the blox error properties for more info
-		console.error(bloxError.message)
-		console.error(bloxError.debugMessage)
-		console.error(bloxError.context)
-	}
+const handleErrors = (errors: { view: any, error: Error }[]) => {
+	console.error(JSON.stringify(errors))
 }
 ```
-
-## Component Errors
-
-For any errors thrown from within a [BloxComponent](/docs/api/components/blox-component), you can optionally provide a function for the component's **on:error** event:
-
-
 ```html
 // Respond to errors
 
@@ -35,29 +17,6 @@ For any errors thrown from within a [BloxComponent](/docs/api/components/blox-co
 	:view="view"
 	:variables="variables"
 	:plugins="plugins"
-	@on:error="(error: any) => handleError(error)"
+	@on:handleErrors="(errors) => handleErrors(errors)"
 />
-```
-
-## Catch All
-
-Vue also provides the app.config.errorHandler mechanism if you'd like to implement a sort of catch-all process:
-
-```ts
-const app = createApp(...)
-
-// ...
-
-app.config.errorHandler = (error: any) => {
-	const bloxError = BloxError.asBloxError(error)
-	if (bloxError) {
-		// Inspect the blox error properties for more info
-		console.error(bloxError.message)
-		console.error(bloxError.debugMessage)
-		console.error(bloxError.context)
-	} else {
-		// Fallback
-		console.error(error)
-	}
-}
 ```

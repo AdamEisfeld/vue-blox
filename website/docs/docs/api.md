@@ -5,7 +5,7 @@ search: true
 # Vue Blox API Documentation
 
 Classes
-- [BloxError](/docs/api/classes/blox-error)
+- [BloxContext](/docs/api/classes/blox-context)
 
 Components
 - [BloxComponent](/docs/api/components/blox-component)

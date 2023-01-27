@@ -1,14 +1,13 @@
 import { test, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { reactive } from 'vue'
-import { BloxComponent, BloxError } from '../src'
+import { BloxComponent } from '../src'
 import { TestPluginSmileys } from './TestPluginSmileys'
 import { TestPluginCrash } from './TestPluginCrash'
 import TestLabelComponent from './TestLabelComponent.vue'
 import TestButtonCounterComponent from './TestButtonCounterComponent.vue'
 import TestStackComponent from 'tests/TestStackComponent.vue'
 import TestStackNoNameComponent from './TestStackNoNameComponent.vue'
-import { BloxGlobal } from 'src/classes/BloxGlobal'
 
 test('Empty settings passed to Blox Component does not crash', async () => {
 
@@ -52,7 +51,6 @@ test('Simple blox component is rendered', async () => {
 
 test('Blox component with bindings is rendered, and modifying bindings programmatically updates render', async () => {
 
-	console.log('Start')
 	// Given
 
 	const catalog = {
@@ -263,11 +261,11 @@ test('Blox Component emits error on running crashing plugin', async () => {
 		'text': 'This is a test.'
 	}
 
-	const plugin = new TestPluginCrash()
+	const plugin = new TestPluginCrash(undefined)
 	
-	let thrownError: any = undefined
-	const onError = (error: BloxError) => {
-		thrownError = error
+	let thrownErrors: any[] = []
+	const onError = (errors: Error[]) => {
+		thrownErrors = errors
 	}
 
 	// When
@@ -278,13 +276,16 @@ test('Blox Component emits error on running crashing plugin', async () => {
 			view: view,
 			variables: undefined,
 			plugins: [plugin],
-			"onHandleError": onError
+			"onHandleErrors": onError
 		},
 	})
 	await wrapper.vm.$nextTick()
 
 	// Then
 
-	expect(thrownError).toBeDefined()
+	expect(thrownErrors).toBeDefined()
+	expect(thrownErrors.length).toEqual(2) // There are 2 keys being checked, so 2 crashes will occur
+	expect(thrownErrors[0].error.message).toEqual('Failed')
+	expect(thrownErrors[1].error.message).toEqual('Failed')
 
 })

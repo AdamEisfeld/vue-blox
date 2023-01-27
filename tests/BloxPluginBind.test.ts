@@ -1,5 +1,5 @@
+import { BloxContext } from '../src/classes/BloxContext'
 import { test, expect } from 'vitest'
-import type { BloxError } from '../src'
 import { BloxPluginBind } from '../src/classes/BloxPluginBind'
 
 test('Bind plugin creates reactive bindings', async () => {
@@ -8,34 +8,26 @@ test('Bind plugin creates reactive bindings', async () => {
 
 	const plugin = new BloxPluginBind()
 	
-	const inputBindings = {
+	const variables = {
 		'name': 'Adam'
 	}
 
-	const computedProps: Record<string, any> = {}
-	const computedSlots: Record<string, any[]> = {}
-	
-	const setProp = (propName: string, value: any) => {
-		if (value) {
-			computedProps[propName] = value
-		} else {
-			delete computedProps[propName]
-		}
-	}
-
-	const setSlot = (slotName: string, views: any[]) => {
-		computedSlots[slotName] = views
-	}
+	const context = new BloxContext()
 
 	// When
-
-	// const bindings = getBloxBindings(inputBindings)
-	plugin.run('bind:text', 'name', inputBindings, setProp, setSlot)
+	plugin.run({
+		context: context,
+		key: 'bind:text',
+		value: 'name',
+		variables: variables,
+		buildContext: () => {
+			return undefined
+		}
+	})
 
 	// Then
 
-	expect(computedProps).toBeDefined()
-	expect(computedProps.text).toBe('Adam')
+	expect(context.props.text).toBe('Adam')
 
 })
 
@@ -45,42 +37,32 @@ test('Bind plugin throws error when bound prop name is empty', async () => {
 
 	const plugin = new BloxPluginBind()
 	
-	const inputBindings = {
+	const variables = {
 		'name': 'Adam'
 	}
 
-	const computedProps: Record<string, any> = {}
-	const computedSlots: Record<string, any[]> = {}
-	
-	const setProp = (propName: string, value: any) => {
-		if (value) {
-			computedProps[propName] = value
-		} else {
-			delete computedProps[propName]
-		}
-	}
-
-	const setSlot = (slotName: string, views: any[]) => {
-		computedSlots[slotName] = views
-	}
+	const context = new BloxContext()
 
 	// When
 
-	// const bindings = getBloxBindings(inputBindings)
-
-	let thrownError: BloxError | undefined = undefined
+	let thrownError: any = undefined
 	try {
-		plugin.run('bind:', 'name', inputBindings, setProp, setSlot)
+		plugin.run({
+			context: context,
+			key: 'bind:',
+			value: 'name',
+			variables: variables,
+			buildContext: () => {
+				return undefined
+			}
+		})
 	} catch(error) {
-		thrownError = error as BloxError
+		thrownError = error
 	}
 
 	// Then
 
-	expect(thrownError?.message).toBe('Bind parsing failed.')
-	expect(thrownError?.debugMessage).toBe('The value for the prop name for bound variable key/value pairs must be a string with length > 0.')
-	expect(thrownError?.context.key).toBe('bind:')
-	expect(thrownError?.context.value).toBe('name')
+	expect(thrownError?.message).toBe('The value for the prop name for bound variable key/value pairs must be a string with length > 0.')
 
 })
 
@@ -90,41 +72,31 @@ test('Bind plugin throws error when bound binding name is not a string', async (
 
 	const plugin = new BloxPluginBind()
 	
-	const inputBindings = {
+	const variables = {
 		'name': 'Adam'
 	}
 
-	const computedProps: Record<string, any> = {}
-	const computedSlots: Record<string, any[]> = {}
-	
-	const setProp = (propName: string, value: any) => {
-		if (value) {
-			computedProps[propName] = value
-		} else {
-			delete computedProps[propName]
-		}
-	}
-
-	const setSlot = (slotName: string, views: any[]) => {
-		computedSlots[slotName] = views
-	}
+	const context = new BloxContext()
 
 	// When
 
-	// const bindings = getBloxBindings(inputBindings)
-
-	let thrownError: BloxError | undefined = undefined
+	let thrownError: any = undefined
 	try {
-		plugin.run('bind:text', 1337, inputBindings, setProp, setSlot)
+		plugin.run({
+			context: context,
+			key: 'bind:text',
+			value: 1337,
+			variables: variables,
+			buildContext: () => {
+				return undefined
+			}
+		})
 	} catch(error) {
-		thrownError = error as BloxError
+		thrownError = error
 	}
 
 	// Then
 
-	expect(thrownError?.message).toBe('Bind parsing failed.')
-	expect(thrownError?.debugMessage).toBe(`The value for the variable name of bound variable key/value pairs must be a string. The value type found is a ${typeof 1337} for bound value bind:text.`)
-	expect(thrownError?.context.key).toBe('bind:text')
-	expect(thrownError?.context.value).toBe(1337)
+	expect(thrownError?.message).toBe(`The value for the variable name of bound variable key/value pairs must be a string. The value type found is a ${typeof 1337} for bound value bind:text.`)
 
 })

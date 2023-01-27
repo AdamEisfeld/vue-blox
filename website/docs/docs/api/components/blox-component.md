@@ -22,7 +22,7 @@ An optional array of plugins to use on every prop value for the view before pass
 
 ## Emits
 
-- **handleError**: This event is emitted from the component if Vue Blox ever encounters a fatal error with the component. The error object may or may not be a [BloxError](/docs/api/classes/blox-error) instance.
+- **handleErrors(```errors: { view: any, error: Error }[]```)**: This event is emitted from the component if Vue Blox ever encounters one or more fatal errors while computing the props/slots for a view. The errors object is an array of { view: any, error: Error }, where the view represents the view that caused the error, and the error is the error that was thrown.
 
 ## Example
 
@@ -72,6 +72,6 @@ An optional array of plugins to use on every prop value for the view before pass
 	:view="view"
 	:variables="variables"
 	:plugins="plugins"
-	@handleError="(error: any) => handleError(error)"
+	@handleErrors="(errors: { view: any, error: Error }[]) => handleErrors(errors)"
 />
 ```

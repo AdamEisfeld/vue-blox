@@ -1,6 +1,6 @@
 
 import type { BloxPluginInterface } from '../interfaces/BloxPluginInterface'
-import { BloxError } from './BloxError'
+import type { BloxContext } from './BloxContext'
 
 /**
  * A key plugin that searches for keys that start with 'bind:' and prepares the resulting prop to be 2-way bound to the matching
@@ -8,11 +8,11 @@ import { BloxError } from './BloxError'
  */
 export class BloxPluginBind implements BloxPluginInterface {
 
-	run(key: string, value: any, variables: any, setProp: (key: string, value: any) => void, setSlot: (slotName: string, views: any[]) => void ): { key: string, value: any } {
+	run({ context, key, value, variables, buildContext }: { context: BloxContext, key: string, value: any, variables: any, buildContext: ({ view, variables }: { view: any, variables: any }) => BloxContext | undefined }) {	
 		
 		const bindSpecifier = 'bind:'
 		if (!key.startsWith(bindSpecifier)) {
-			return { key, value }
+			return
 		}
 
 		// This is a bound prop. 
@@ -20,40 +20,34 @@ export class BloxPluginBind implements BloxPluginInterface {
 		// 1. Get the prop name
 		const propName = key.substring(bindSpecifier.length, key.length)
 		if (propName.length === 0) {
-			throw new BloxError(
-				'Bind parsing failed.',
-				`The value for the prop name for bound variable key/value pairs must be a string with length > 0.`,
-				{
-					key, value
-				}
-			)
+			throw new Error(`The value for the prop name for bound variable key/value pairs must be a string with length > 0.`)
 		}
 
 		// 2. The value for the key is the name of a variable we want to bind to
 		const variableName = value
 		if (typeof variableName !== 'string') {
-			throw new BloxError(
-				'Bind parsing failed.',
-				`The value for the variable name of bound variable key/value pairs must be a string. The value type found is a ${typeof variableName} for bound value ${key}.`,
-				{
-					key, value
-				}
-			)
+			throw new Error(`The value for the variable name of bound variable key/value pairs must be a string. The value type found is a ${typeof variableName} for bound value ${key}.`)
 		}
 	
 		// 3. Construct getter / setter props for v-bind
 
-		setProp(key, undefined)
-		setProp(propName, variables[variableName])
-		setProp(`onUpdate:${propName}`, (newValue: any) => {
-			variables[variableName] = newValue
+		context.setProp({
+			propName: key,
+			value: undefined
 		})
 
-		return {
-			key: propName,
-			value: value,
-		}
-		
+		context.setProp({
+			propName: propName,
+			value: variables[variableName]
+		})
+
+		context.setProp({
+			propName: `onUpdate:${propName}`,
+			value: (newValue: any) => {
+				variables[variableName] = newValue
+			}
+		})
+
 	}
 
 }

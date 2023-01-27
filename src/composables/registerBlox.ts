@@ -1,6 +1,7 @@
 import type { App, ComponentPublicInstance, Plugin } from 'vue';
 import { BloxGlobal } from '../classes/BloxGlobal';
 import BloxComponent from '../components/BloxComponent.vue';
+import BloxComponentInternal from '../components/BloxComponentInternal.vue';
 import type { BloxPluginInterface } from '../interfaces/BloxPluginInterface'
 
 /**
@@ -16,6 +17,7 @@ export function registerBlox(options?: { catalog?: Record<string, ComponentPubli
 			BloxGlobal.shared.catalog = options?.catalog ?? {}
 			BloxGlobal.shared.plugins = options?.plugins ?? []
 			app.component('BloxComponent', BloxComponent)
+			app.component('BloxComponentInternal', BloxComponentInternal)
 		}
 	}
 

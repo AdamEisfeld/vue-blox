@@ -1,3 +1,4 @@
+import type { BloxContext } from '../src/classes/BloxContext'
 import type { BloxPluginInterface } from '../src/interfaces/BloxPluginInterface'
 
 /**
@@ -5,14 +6,17 @@ import type { BloxPluginInterface } from '../src/interfaces/BloxPluginInterface'
  */
 export class TestPluginSmileys implements BloxPluginInterface {
 
-	run(key: string, value: any, variables: any, setProp: (key: string, value: any) => void, setSlot: (slotName: string, views: any[]) => void ): { key: string, value: any } {
-
+	run({ context, key, value, variables, buildContext }: { context: BloxContext, key: string, value: any, variables: any, buildContext: ({ view, variables }: { view: any, variables: any }) => BloxContext | undefined }): void {	
+	
 		if (typeof value !== 'string') {
-			return { key, value }
+			return
 		}
 		const result = (value as string).replace(/\[smiley\]/g, '😊')
-		setProp(key, (value as string).replace(/\[smiley\]/g, '😊'))
-		return { key, value: result }
+		context.setProp({
+			propName: key,
+			value: result
+		})
+
 	}
 
 }

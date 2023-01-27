@@ -20,7 +20,6 @@ import DemoHeadingComponent from '../../src/demo/DemoHeadingComponent.vue'
 import DemoCellComponent from '../../src/demo/DemoCellComponent.vue'
 import DemoImageComponent from '../../src/demo/DemoImageComponent.vue'
 import DemoButtonComponent from '../../src/demo/DemoButtonComponent.vue'
-import { BloxError } from '../../../node_modules/vue-blox'
 
 export default defineComponent({
 	name: 'LandingPage',
@@ -37,15 +36,6 @@ export default defineComponent({
 	},
 	props: undefined,
 	setup() {
-
-		window.onerror = function(message, source, lineno, colno, error) {
-			const bloxError = BloxError.asBloxError(error)
-			if (bloxError) {
-				console.log(`Blox Error: ${bloxError.debugMessage}`)
-			} else {
-				console.log(message, source, lineno, colno, error)
-			}
-		}
 
 		const refBelowFold: Ref<ComponentPublicInstance<any> | undefined> = ref(undefined)
 

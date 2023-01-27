@@ -44,10 +44,14 @@ export default defineComponent({
 			]
 		})
 
+		const plugins: any = [
+		]
+
 		return {
 			catalog,
 			variables,
 			view,
+			plugins,
 		}
 	},
 })
