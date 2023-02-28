@@ -36,6 +36,7 @@ module.exports = {
 				text: 'Advanced',
 				items: [
 					{ text: 'Binding Props', link: '/docs/advanced/binding-props' },
+					{ text: 'Functions As Props', link: '/docs/advanced/functions-as-props' },
 					{ text: 'Watching Bindings', link: '/docs/advanced/watching-bindings' },
 					{ text: 'Providing Slots', link: '/docs/advanced/providing-slots' },
 					{ text: 'Component-Level Catalogs', link: '/docs/advanced/component-level-catalogs' },

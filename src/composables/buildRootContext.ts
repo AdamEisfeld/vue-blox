@@ -1,6 +1,7 @@
 import type { ComponentPublicInstance } from 'vue'
 import { BloxContext } from '../classes/BloxContext'
 import type { BloxPluginInterface } from '../interfaces/BloxPluginInterface'
+import { deepCopy } from './deepCopy'
 
 export function buildRootContext({ view, variables, catalog, plugins }: { view: any, variables: any, catalog: Record<string, ComponentPublicInstance>, plugins: BloxPluginInterface[] }): { context: BloxContext | undefined, errors: { view: any, error: any }[] | undefined } {
 
@@ -27,7 +28,7 @@ export function buildRootContext({ view, variables, catalog, plugins }: { view: 
 
 	const result = new BloxContext()
 	result.component = catalog[view.type]
-	result.props = JSON.parse(JSON.stringify(view))
+	result.props = deepCopy(view)
 
 	const viewKeys = Object.keys(result.props)
 
@@ -50,13 +51,13 @@ export function buildRootContext({ view, variables, catalog, plugins }: { view: 
 	for (let k = 0; k < viewKeys.length; k += 1) {
 
 		const key = viewKeys[k]
-		const value = result.props[key]
 
 		// Iterate over plugins, running them on each key/value pair of our view to build our
 		// final props / slots to provide to the embedded component
 
 		for (let p = 0; p < plugins.length; p += 1) {
 
+			const value = result.props[key]
 			const plugin = plugins[p]
 			try {
 				plugin.run({

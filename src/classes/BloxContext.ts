@@ -8,7 +8,7 @@ export class BloxContext {
 	slots: Record<string, BloxContext[]> = {}
 
 	setProp({ propName, value }: { propName: string, value: any }) {
-		if (value) {
+		if (value !== undefined) {
 			this.props[propName] = value
 		} else {
 			delete this.props[propName]

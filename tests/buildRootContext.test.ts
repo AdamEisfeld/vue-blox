@@ -85,6 +85,41 @@ test('buildRootContext returns correct props', async () => {
 
 })
 
+test('buildRootContext allows functions as props', async () => {
+
+	// Given
+	
+	let mutableValue: string = 'Hello'
+
+	const view = {
+		type: 'label',
+		name: 'Tony Stark',
+		someFunction: () => {
+			mutableValue = 'Goodbye'
+		}
+	}
+	const variables = undefined
+	const catalog = {}
+	const plugins: BloxPluginInterface[] = []
+
+	// When
+
+	const root = buildRootContext({
+		view: view,
+		variables: variables,
+		catalog: catalog,
+		plugins: plugins
+	})
+
+	const someFunction = root.context?.props.someFunction
+	someFunction()
+	// Then
+
+	expect(someFunction).toBeDefined()
+	expect(mutableValue).toBe('Goodbye')
+	
+})
+
 test('buildRootContext returns correct component', async () => {
 
 	// Given

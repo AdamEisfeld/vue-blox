@@ -16,8 +16,8 @@
     "expr-eval": "^2.0.2",
     "mustache": "^4.1.0",
     "vue-blox": "^0.7.0",
-    "vue-blox-expressions": "^0.2.1",
-    "vue-blox-mustache": "^0.4.0"
+    "vue-blox-expressions": "^0.2.2",
+    "vue-blox-mustache": "^0.4.1"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
