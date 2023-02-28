@@ -1,5 +1,13 @@
 export function deepCopy(source: any): any {
 
+	if (source === undefined) {
+		return undefined
+	}
+
+	if (source === null) {
+		return null
+	}
+	
 	if (typeof source !== 'object') {
 		return JSON.parse(JSON.stringify(source))
 	}
