@@ -5,6 +5,7 @@ import { BloxComponent } from '../src'
 import StackComponent from './components/StackComponent.vue'
 import LabelComponent from './components/LabelComponent.vue'
 import ButtonComponent from './components/ButtonComponent.vue'
+import IncrementComponent from './components/IncrementComponent.vue'
 
 export default defineComponent({
 	name: 'App',
@@ -14,19 +15,37 @@ export default defineComponent({
 	props: {},
 	setup() {
 
+		const variables: any = reactive({
+			name: 'Adam',
+			foo: 1,
+			profile: {
+				age: 30,
+				occupation: 'Software Engineer',
+			},
+			friends: [
+				{
+					name: 'Bob',
+					age: 31,
+				},
+				{
+					name: 'Charlie',
+					age: 32,
+				},
+				{
+					name: 'Dave',
+					age: 33,
+				}
+			]
+		})
+
 		// 1. Catalog
 
 		const catalog = {
 			'stack': StackComponent,
 			'label': LabelComponent,
 			'button': ButtonComponent,
+			'increment': IncrementComponent,
 		}
-		
-		// 2. Construct variables
-		
-		const variables = reactive({
-			message: 'Hello, world!',
-		})
 
 		// 3. Construct view
 
@@ -34,14 +53,14 @@ export default defineComponent({
 			type: 'stack',
 			'slot:children': [
 				{
-					type: 'label',
-					'bind:text': 'message',
+					type: 'increment',
+					'bind:value': 'friends.1.age',
 				},
-				{
-					type: 'button',
-					title: 'Click Me',
-				},
-			]
+			],
+			'for_each:friends': {
+				'type': 'label',
+				'text': 'Hello {{name}}',
+			}
 		})
 
 		const plugins: any = [

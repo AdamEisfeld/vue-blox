@@ -36,15 +36,35 @@ export class BloxPluginBind implements BloxPluginInterface {
 			value: undefined
 		})
 
+		const get_value = () => {
+			const paths = variableName.split('.')
+			let value = variables
+			for (const path of paths) {
+				value = value[path]
+			}
+			return value
+		}
+
+		const set_value = (newValue: any) => {
+			const paths = variableName.split('.')
+			let value = variables
+			for (let i = 0; i < paths.length - 1; i++) {
+				value = value[paths[i]]
+			}
+			value[paths[paths.length - 1]] = newValue
+		}
+
+
+
 		context.setProp({
 			propName: propName,
-			value: variables[variableName]
+			value: get_value()
 		})
 
 		context.setProp({
 			propName: `onUpdate:${propName}`,
 			value: (newValue: any) => {
-				variables[variableName] = newValue
+				set_value(newValue)
 			}
 		})
 

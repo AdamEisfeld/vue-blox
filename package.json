@@ -1,6 +1,6 @@
 {
 	"name": "vue-blox",
-	"version": "0.7.4",
+	"version": "0.7.5",
 	"author": "Adam Eisfeld",
 	"license": "MIT",
 	"description": "Render custom Vue components from regular JS objects at runtime. Bind reactive properties from your components to variables.",
